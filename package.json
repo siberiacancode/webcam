@@ -1,0 +1,100 @@
+{
+  "name": "webcam-canvas",
+  "description": "React/Webcam/Canvas package",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Mironychev Michael",
+    "url": "https://github.com/michael-mir"
+  },
+  "contributors": [
+    {
+      "name": "Mironychev Michael",
+      "url": "https://github.com/michael-mir"
+    }
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michael-mir/webcam-canvas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/michael-mir/webcam-canvas/issues"
+  },
+  "homepage": "https://github.com/michael-mir/webcam-canvas",
+  "sideEffects": false,
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "shx rm -rf dist && rollup -c --bundleConfigAsCjs",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "prepare": "husky install && npm run build",
+    "postversion": "git push && git push --tags",
+    "lint": "eslint . --ext ts --ext tsx --no-error-on-unmatched-pattern --fix",
+    "format": "prettier --write \"**/*.{js,ts,tsx}\"",
+    "type": "tsc --noEmit",
+    "pretty": "yarn type && yarn format && yarn lint",
+    "ci": "shx rm -rf node_modules && yarn install --immutable --immutable-cache --check-cache"
+  },
+  "lint-staged": {
+    "*.js": "prettier --write",
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --no-error-on-unmatched-pattern --fix"
+    ]
+  },
+  "peerDependencies": {
+    "@types/react": "^18.0.0",
+    "react": "^17.0.2 || ^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.20",
+    "@babel/plugin-transform-runtime": "^7.22.15",
+    "@babel/preset-env": "^7.22.20",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.22.15",
+    "@babel/runtime": "^7.22.15",
+    "@siberiacancode/builder": "^1.1.0",
+    "@siberiacancode/eslint": "^1.0.2",
+    "@siberiacancode/prettier": "^1.0.0",
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "babel-loader": "^9.1.3",
+    "babel-plugin-react-require": "^4.0.1",
+    "eslint": "^8.50.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "react": "^17.0.2",
+    "rollup": "^3.26.0",
+    "shx": "^0.3.4",
+    "typescript": "^4.9.5"
+  },
+  "keywords": [
+    "media",
+    "video",
+    "react",
+    "canvas",
+    "webcam",
+    "stream",
+    "userMedia",
+    "navigator",
+    "screenshot",
+    "constraints",
+    "getUserMedia",
+    "react-webcam",
+    "webcam-canvas"
+  ]
+}
