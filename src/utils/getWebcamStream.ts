@@ -1,13 +1,18 @@
 import { canGetUserMedia } from './canGetUserMedia';
 import { getConstraintsBySource } from './getConstraintsBySource';
+import type { GetMainCamerasOptions } from './getMainCameras';
 import { getMainCameras } from './getMainCameras';
 import { getUserMedia } from './getUserMedia';
 
+export type CameraResolutionType = 'HD' | 'FHD' | 'QHD' | 'UHD';
+export type CameraResolutionMode = keyof ConstrainULongRange;
+
 export interface WebcamStreamParams {
-  maxVideoQuality?: boolean;
-  consoleInfo?: boolean;
+  mainCamera?: GetMainCamerasOptions | boolean;
+  cameraResolutionMode?: CameraResolutionMode;
+  cameraResolutionType?: CameraResolutionType;
   frontCamera?: boolean;
-  mainCamera?: boolean;
+  debug?: boolean;
   muted?: boolean;
 }
 
@@ -17,26 +22,82 @@ export interface GetWebcamStreamOptions {
   params?: WebcamStreamParams;
 }
 
-export const MAX_VIDEO_QUALITY_CONSTRAINTS: MediaTrackConstraints = {
-  width: { ideal: 3840 },
-  height: { ideal: 2160 }
+type VideoResolutionSize = {
+  width: number;
+  height: number;
+};
+
+export const VIDEO_RESOLUTION_SIZE: Record<CameraResolutionType, VideoResolutionSize> = {
+  UHD: {
+    width: 3840,
+    height: 2160
+  },
+  QHD: {
+    width: 2560,
+    height: 1440
+  },
+  FHD: {
+    width: 1920,
+    height: 1080
+  },
+  HD: {
+    width: 1280,
+    height: 720
+  }
+};
+
+const getVideoTrackConstraints = async (
+  constraints: MediaTrackConstraints,
+  {
+    frontCamera: shouldUseFrontCamera,
+    cameraResolutionMode = 'ideal',
+    cameraResolutionType,
+    mainCamera
+  }: WebcamStreamParams
+) => {
+  const videoConstraints: MediaTrackConstraints = {
+    ...constraints
+  };
+
+  if (mainCamera) {
+    const [frontCamera, backCamera] =
+      (await getMainCameras(typeof mainCamera === 'object' ? mainCamera : {})) || [];
+
+    if (shouldUseFrontCamera && frontCamera) {
+      videoConstraints.deviceId = { exact: frontCamera.deviceId };
+    }
+
+    if (!shouldUseFrontCamera && backCamera) {
+      videoConstraints.deviceId = { exact: backCamera.deviceId };
+    }
+  }
+
+  if (!videoConstraints.deviceId) {
+    videoConstraints.facingMode = shouldUseFrontCamera ? 'user' : 'environment';
+  }
+
+  return {
+    ...videoConstraints,
+    ...(cameraResolutionType && {
+      width: {
+        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].width
+      },
+      height: {
+        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].height
+      }
+    })
+  };
 };
 
 export const getWebcamStream = ({
-  params: {
-    frontCamera: shouldUseFrontCamera = true,
-    maxVideoQuality = true,
-    consoleInfo = true,
-    mainCamera = true,
-    muted = true
-  } = {},
+  params: { debug = true, muted = true, ...params } = {},
   constraints: { video = true, audio = false, ...constraints } = {},
   defaultErrorMessage = 'Something went wrong'
 }: GetWebcamStreamOptions = {}): Promise<MediaStream> =>
   new Promise((resolve, reject) => {
     const handleUserMediaError = (userMediaError: Error) => {
       const { message = defaultErrorMessage } = userMediaError;
-      if (consoleInfo) console.error('[Webcam/error]:', message);
+      if (debug) console.error('[Webcam/error]:', message);
       reject(message);
     };
 
@@ -49,27 +110,18 @@ export const getWebcamStream = ({
           throw new Error('Function getUserMedia of Navigator is not supported');
         }
 
-        const [frontCamera, backCamera] = mainCamera ? await getMainCameras() : [];
-
         const mediaStreamConstraints: MediaStreamConstraints = {
           ...constraints,
-          video: videoConstraints
-            ? {
-                facingMode: shouldUseFrontCamera ? 'user' : 'environment',
-                ...(maxVideoQuality && MAX_VIDEO_QUALITY_CONSTRAINTS),
-                ...(backCamera && {
-                  deviceId: shouldUseFrontCamera
-                    ? { exact: frontCamera?.deviceId }
-                    : { exact: backCamera?.deviceId }
-                }),
-                ...(typeof videoConstraints === 'object' && videoConstraints)
-              }
-            : false
+          ...(!muted && {
+            audio: typeof audioConstraints !== 'undefined' ? audioConstraints : true
+          })
         };
 
-        if (!muted) {
-          mediaStreamConstraints.audio =
-            typeof audioConstraints !== 'undefined' ? audioConstraints : true;
+        if (videoConstraints) {
+          mediaStreamConstraints.video = await getVideoTrackConstraints(
+            typeof videoConstraints === 'object' ? videoConstraints : {},
+            params
+          );
         }
 
         const stream = await getUserMedia(mediaStreamConstraints);

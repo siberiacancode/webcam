@@ -9,28 +9,29 @@ type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'onPlay' | 'onE
 export interface WebcamProps extends VideoElementProps, WebcamStreamParams {
   mirrored?: boolean;
   stream?: MediaStream;
-  onError?: (error: string) => void;
   innerRef?: RefObject<HTMLVideoElement>;
   audioConstraints?: MediaTrackConstraints;
   videoConstraints?: MediaTrackConstraints;
+  onError?: (error: string) => void;
   onPlay?: (video: HTMLVideoElement) => void;
 }
 
 export const Webcam: FC<WebcamProps> = ({
   innerRef: externalVideoRef,
   stream: externalStream,
+  cameraResolutionMode,
+  cameraResolutionType,
   videoConstraints,
   audioConstraints,
-  maxVideoQuality = true,
-  consoleInfo = true,
-  frontCamera = true,
-  mainCamera = true,
+  frontCamera,
+  mainCamera,
   mirrored = true,
   muted = true,
   style = {},
   children,
   onError,
   onPlay,
+  debug,
   ...props
 }) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -44,10 +45,11 @@ export const Webcam: FC<WebcamProps> = ({
   };
 
   const webcamSteamParams: WebcamStreamParams = {
-    maxVideoQuality,
-    consoleInfo,
+    cameraResolutionMode,
+    cameraResolutionType,
     frontCamera,
     mainCamera,
+    debug,
     muted
   };
 
@@ -76,9 +78,9 @@ export const Webcam: FC<WebcamProps> = ({
     requestUserMedia();
 
     return () => {
-      stopWebcamStream(externalStream || internalStreamRef.current);
+      stopWebcamStream(internalStreamRef.current);
     };
-  }, [webcamSteamConstraints, webcamSteamParams, externalStream, onError]);
+  }, [webcamSteamConstraints, webcamSteamParams, onError]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -87,8 +89,12 @@ export const Webcam: FC<WebcamProps> = ({
     const handleMetaData = () => {
       video.play();
       onPlay?.(video);
-      if (!consoleInfo) return;
-      console.info('[Webcam/resolution]:', video.videoWidth, 'x', video.videoHeight);
+      if (!debug) return;
+      console.info(
+        '[Webcam/stream]:',
+        'playing with resolution',
+        `${video.videoWidth}x${video.videoHeight}`
+      );
     };
 
     video.addEventListener('loadedmetadata', handleMetaData);

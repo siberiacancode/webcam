@@ -1,15 +1,15 @@
 export interface GetWebcamScreenshotOptions {
   width?: number;
   height?: number;
-  imageSmoothingEnabled?: boolean;
-  format?: ImageFormat;
   quality?: number;
+  format?: ImageFormat;
+  imageSmoothingEnabled?: boolean;
 }
 
 export const getWebcamScreenshot = (
   source: HTMLVideoElement,
   {
-    imageSmoothingEnabled = true,
+    imageSmoothingEnabled = false,
     format = 'image/jpeg',
     quality = 1,
     ...options
