@@ -1,19 +1,44 @@
-import type { ComponentPropsWithoutRef, FC, RefObject } from 'react';
-import React, { useEffect, useRef } from 'react';
+import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type { WebcamStreamParams } from '../../utils';
-import { getWebcamStream, stopWebcamStream } from '../../utils';
+import type {
+  GetVideoFrameCanvasOptions,
+  GetWebcamScreenshotOptions,
+  MediaTrackConstraintsParams
+} from '../../utils';
+import {
+  cancelAnimationFrame,
+  getVideoFrameCanvas,
+  getWebcamScreenshot,
+  getWebcamStream,
+  requestAnimationFrame,
+  stopWebcamStream
+} from '../../utils';
 
-type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'onPlay' | 'onError'>;
+type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;
 
-export interface WebcamProps extends VideoElementProps, WebcamStreamParams {
+export type WebcamRenderProps = (options: {
+  getCanvas: (options?: GetVideoFrameCanvasOptions) => HTMLCanvasElement | null;
+  getScreenshot: (options?: GetWebcamScreenshotOptions) => string | null;
+  videoElement: HTMLVideoElement | null;
+}) => ReactNode;
+
+export interface WebcamProps extends VideoElementProps, MediaTrackConstraintsParams {
   mirrored?: boolean;
   stream?: MediaStream;
   innerRef?: RefObject<HTMLVideoElement>;
+  children?: ReactNode | WebcamRenderProps;
   audioConstraints?: MediaTrackConstraints;
   videoConstraints?: MediaTrackConstraints;
-  onError?: (error: string) => void;
-  onPlay?: (video: HTMLVideoElement) => void;
+  onStreamRequest?: () => void;
+  onStreamError?: (error: string) => void;
+  onStreamStop?: (stream: MediaStream) => void;
+  onStreamStart?: (stream: MediaStream) => void;
+  onVideoLoad?: (videoElement: HTMLVideoElement) => void;
+  onVideoPlay?: (
+    videoElement: HTMLVideoElement,
+    timestamp?: DOMHighResTimeStamp
+  ) => boolean | undefined;
 }
 
 export const Webcam: FC<WebcamProps> = ({
@@ -29,48 +54,63 @@ export const Webcam: FC<WebcamProps> = ({
   muted = true,
   style = {},
   children,
-  onError,
-  onPlay,
-  debug,
+  onStreamError,
+  onStreamStop,
+  onStreamStart,
+  onStreamRequest,
+  onVideoPlay,
+  onVideoLoad,
   ...props
 }) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
   const internalStreamRef = useRef<MediaStream | null>(null);
+  const [videoSrc, setVideoSrc] = useState<string>();
 
   const videoRef = externalVideoRef ?? internalVideoRef;
 
-  const webcamSteamConstraints: MediaStreamConstraints = {
+  const webcamStreamConstraints: MediaStreamConstraints = {
     video: videoConstraints,
     audio: audioConstraints
   };
 
-  const webcamSteamParams: WebcamStreamParams = {
+  const mediaTrackConstraintsParams: MediaTrackConstraintsParams = {
     cameraResolutionMode,
     cameraResolutionType,
     frontCamera,
     mainCamera,
-    debug,
     muted
   };
 
-  const requestUserMedia = async () => {
+  const setWebcamStream = (stream: MediaStream) => {
     if (!videoRef.current) return;
 
+    if ('srcObject' in videoRef.current) {
+      videoRef.current.srcObject = stream;
+      return;
+    }
+
+    // @ts-ignore
+    setVideoSrc(window.URL.createObjectURL(stream));
+  };
+
+  const requestUserMedia = async () => {
     if (externalStream) {
-      videoRef.current.srcObject = externalStream;
+      setWebcamStream(externalStream);
       return;
     }
 
     try {
+      onStreamRequest?.();
       const webcamStream = await getWebcamStream({
-        constraints: webcamSteamConstraints,
-        params: webcamSteamParams
+        constraints: webcamStreamConstraints,
+        params: mediaTrackConstraintsParams
       });
 
+      onStreamStart?.(webcamStream);
+      setWebcamStream(webcamStream);
       internalStreamRef.current = webcamStream;
-      videoRef.current.srcObject = webcamStream;
     } catch (error) {
-      onError?.(error as string);
+      onStreamError?.(error as string);
     }
   };
 
@@ -78,40 +118,68 @@ export const Webcam: FC<WebcamProps> = ({
     requestUserMedia();
 
     return () => {
-      stopWebcamStream(internalStreamRef.current);
+      if (videoSrc) {
+        window.URL.revokeObjectURL(videoSrc);
+      }
+
+      if (internalStreamRef.current) {
+        onStreamStop?.(internalStreamRef.current);
+        stopWebcamStream(internalStreamRef.current);
+      }
     };
-  }, [webcamSteamConstraints, webcamSteamParams, onError]);
+  }, [webcamStreamConstraints, mediaTrackConstraintsParams]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    let animationFrameRequestId: number | undefined;
+
+    const cancelFrameRequest = () => {
+      if (animationFrameRequestId) {
+        cancelAnimationFrame(animationFrameRequestId);
+      }
+    };
 
     const handleMetaData = () => {
-      video.play();
-      onPlay?.(video);
-      if (!debug) return;
-      console.info(
-        '[Webcam/stream]:',
-        'playing with resolution',
-        `${video.videoWidth}x${video.videoHeight}`
-      );
+      onVideoLoad?.(videoElement);
+      videoElement.play();
+
+      if (!onVideoPlay) return;
+
+      const onFrameRequest = (timestamp?: DOMHighResTimeStamp) => {
+        const stopRequest = onVideoPlay(videoElement, timestamp);
+
+        if (stopRequest) {
+          cancelFrameRequest();
+          return;
+        }
+
+        animationFrameRequestId = requestAnimationFrame(onFrameRequest);
+      };
+
+      onFrameRequest();
     };
 
-    video.addEventListener('loadedmetadata', handleMetaData);
+    videoElement.addEventListener('loadedmetadata', handleMetaData);
 
     return () => {
-      video.removeEventListener('loadedmetadata', handleMetaData);
+      videoElement.removeEventListener('loadedmetadata', handleMetaData);
+      cancelFrameRequest();
     };
-  }, [onPlay]);
+  }, [onVideoLoad, onVideoPlay]);
 
   return (
     <>
       <video
         autoPlay
         playsInline
+        disableRemotePlayback
+        disablePictureInPicture
+        controls={false}
         muted={muted}
         ref={videoRef}
-        controls={false}
+        src={videoSrc}
         style={{
           ...style,
           ...(mirrored && {
@@ -120,7 +188,15 @@ export const Webcam: FC<WebcamProps> = ({
         }}
         {...props}
       />
-      {children}
+      {typeof children === 'function'
+        ? children({
+            videoElement: videoRef.current,
+            getCanvas: (options?: GetVideoFrameCanvasOptions) =>
+              getVideoFrameCanvas(videoRef.current, options),
+            getScreenshot: (options?: GetWebcamScreenshotOptions) =>
+              getWebcamScreenshot(videoRef.current, options)
+          })
+        : children}
     </>
   );
 };

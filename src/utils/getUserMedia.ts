@@ -6,7 +6,7 @@ export const getUserMediaFunction =
     navigator.msGetUserMedia);
 
 export const getUserMedia = (constraints: MediaStreamConstraints): Promise<MediaStream> => {
-  if (navigator.mediaDevices?.getUserMedia === undefined) {
+  if (!navigator.mediaDevices?.getUserMedia) {
     if (!getUserMediaFunction) {
       return Promise.reject(
         new Error('Function getUserMedia of Navigator is not implemented in this browser')

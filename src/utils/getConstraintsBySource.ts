@@ -1,10 +1,10 @@
 const getOptionalSourceConstraints = (id: string | null) =>
   ({ optional: [{ sourceId: id }] }) as MediaTrackConstraints;
 
-const getSourceIdByConstraints = (constraint?: MediaTrackConstraints | boolean) => {
-  if (typeof constraint !== 'object') return null;
+const getSourceIdByConstraints = (constraints?: MediaTrackConstraints | boolean) => {
+  if (typeof constraints !== 'object') return null;
 
-  const { deviceId } = constraint;
+  const { deviceId } = constraints;
 
   if (typeof deviceId === 'string') return deviceId;
 
@@ -24,7 +24,8 @@ const getSourceIdByConstraints = (constraint?: MediaTrackConstraints | boolean) 
 export const getConstraintsBySource = (
   selectMediaSource: (
     videoConstraints: MediaStreamConstraints['video'],
-    audioConstraints: MediaStreamConstraints['audio']
+    audioConstraints: MediaStreamConstraints['audio'],
+    mergeConstraints?: boolean
   ) => void,
   constraints?: MediaStreamConstraints
 ) => {
@@ -50,7 +51,8 @@ export const getConstraintsBySource = (
 
     selectMediaSource(
       getOptionalSourceConstraints(videoSourceId ?? videoSource),
-      getOptionalSourceConstraints(audioSourceId ?? audioSource)
+      getOptionalSourceConstraints(audioSourceId ?? audioSource),
+      false
     );
   });
 };

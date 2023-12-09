@@ -9,4 +9,13 @@ interface Navigator {
   msGetUserMedia?: Navigator['getUserMedia'];
 }
 
+interface Window {
+  msRequestAnimationFrame?: Window['requestAnimationFrame'];
+  mozRequestAnimationFrame?: Window['requestAnimationFrame'];
+  webkitRequestAnimationFrame?: Window['requestAnimationFrame'];
+  msCancelAnimationFrame?: Window['cancelAnimationFrame'];
+  mozCancelAnimationFrame?: Window['cancelAnimationFrame'];
+  webkitCancelAnimationFrame?: Window['cancelAnimationFrame'];
+}
+
 type ImageFormat = 'image/webp' | 'image/png' | 'image/jpeg';

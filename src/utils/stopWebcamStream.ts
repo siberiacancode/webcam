@@ -1,6 +1,4 @@
-export const stopWebcamStream = (stream?: MediaStreamTrack | MediaStream | null) => {
-  if (!stream) return;
-
+export const stopWebcamStream = (stream: MediaStreamTrack | MediaStream) => {
   if (stream instanceof MediaStreamTrack) {
     stream.stop();
     return;

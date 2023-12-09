@@ -1,35 +1,16 @@
-export interface GetWebcamScreenshotOptions {
-  width?: number;
-  height?: number;
-  quality?: number;
+import type { GetVideoFrameCanvasOptions } from './getVideoFrameCanvas';
+import { getVideoFrameCanvas } from './getVideoFrameCanvas';
+
+export interface GetWebcamScreenshotOptions extends GetVideoFrameCanvasOptions {
   format?: ImageFormat;
-  imageSmoothingEnabled?: boolean;
+  quality?: number;
 }
 
 export const getWebcamScreenshot = (
-  source: HTMLVideoElement,
-  {
-    imageSmoothingEnabled = false,
-    format = 'image/jpeg',
-    quality = 1,
-    ...options
-  }: GetWebcamScreenshotOptions = {}
+  source?: HTMLVideoElement | null,
+  { format = 'image/jpeg', quality = 1, ...options }: GetWebcamScreenshotOptions = {}
 ) => {
-  const canvasWidth = source.videoWidth;
-  const canvasHeight = source.videoHeight;
+  const canvas = getVideoFrameCanvas(source, options);
 
-  const canvas = document.createElement('canvas');
-  canvas.width = options?.width || canvasWidth;
-  canvas.height = options?.height || canvasHeight;
-
-  const context = canvas.getContext('2d');
-
-  if (!context) {
-    throw new Error('Canvas context is empty');
-  }
-
-  context.imageSmoothingEnabled = imageSmoothingEnabled;
-  context.drawImage(source, 0, 0, canvasWidth, canvasHeight);
-
-  return canvas.toDataURL(format, quality);
+  return canvas && canvas.toDataURL(format, quality);
 };
