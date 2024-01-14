@@ -1,33 +1,29 @@
 export interface GetVideoFrameCanvasOptions {
-  imageSmoothing?: boolean;
+  imageSmoothingEnabled?: boolean;
   mirrored?: boolean;
   height?: number;
   width?: number;
 }
 
 export const getVideoFrameCanvas = (
-  source?: HTMLVideoElement | null,
-  { imageSmoothing = true, mirrored, ...options }: GetVideoFrameCanvasOptions = {}
+  source: HTMLVideoElement,
+  { imageSmoothingEnabled = true, mirrored, ...options }: GetVideoFrameCanvasOptions = {}
 ) => {
-  if (!source) return null;
-
-  const canvasWidth = source.videoWidth;
-  const canvasHeight = source.videoHeight;
+  const { videoWidth: canvasWidth, videoHeight: canvasHeight } = source;
 
   const canvas = document.createElement('canvas');
-  canvas.width = options?.width || canvasWidth;
-  canvas.height = options?.height || canvasHeight;
+  canvas.height = options.height || canvasHeight;
+  canvas.width = options.width || canvasWidth;
 
   const context = canvas.getContext('2d');
-
-  if (!context) return null;
+  if (!context) return;
 
   if (mirrored) {
     context.translate(canvas.width, 0);
     context.scale(-1, 1);
   }
 
-  context.imageSmoothingEnabled = imageSmoothing;
+  context.imageSmoothingEnabled = imageSmoothingEnabled;
   context.drawImage(source, 0, 0, canvasWidth, canvasHeight);
 
   if (mirrored) {

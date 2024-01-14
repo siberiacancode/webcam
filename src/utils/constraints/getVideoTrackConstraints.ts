@@ -1,5 +1,5 @@
-import type { GetMainCameraParams } from './getMainCamera';
-import { getMainCamera } from './getMainCamera';
+import type { GetMainCameraParams } from '../getMainCamera';
+import { getMainCamera } from '../getMainCamera';
 
 export type VideoResolutionSize = {
   width: number;
@@ -29,10 +29,9 @@ export const VIDEO_RESOLUTION_SIZE: Record<CameraResolutionType, VideoResolution
 };
 
 export interface VideoTrackConstraintsParams {
-  mainCamera?: GetMainCameraParams | boolean;
   cameraResolutionMode?: CameraResolutionMode;
   cameraResolutionType?: CameraResolutionType;
-  mergeConstraints?: 'start' | 'end';
+  mainCamera?: GetMainCameraParams | boolean;
   frontCamera?: boolean;
 }
 
@@ -41,12 +40,20 @@ export const getVideoTrackConstraints = async (
   {
     mainCamera: useMainCamera,
     frontCamera: useFrontCamera,
-    mergeConstraints = 'start',
     cameraResolutionType,
     cameraResolutionMode = 'ideal'
   }: VideoTrackConstraintsParams
 ) => {
-  const videoConstraints: MediaTrackConstraints = {};
+  const customConstraints: MediaTrackConstraints = {
+    ...(cameraResolutionType && {
+      width: {
+        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].width
+      },
+      height: {
+        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].height
+      }
+    })
+  };
 
   if (useMainCamera) {
     const mainCamera = await getMainCamera(
@@ -55,25 +62,16 @@ export const getVideoTrackConstraints = async (
     );
 
     if (mainCamera?.deviceId) {
-      videoConstraints.deviceId = { exact: mainCamera.deviceId };
+      customConstraints.deviceId = { exact: mainCamera.deviceId };
     }
   }
 
-  if (!videoConstraints.deviceId && typeof useFrontCamera === 'boolean') {
-    videoConstraints.facingMode = useFrontCamera ? 'user' : 'environment';
+  if (!customConstraints.deviceId && typeof useFrontCamera === 'boolean') {
+    customConstraints.facingMode = useFrontCamera ? 'user' : 'environment';
   }
 
   return {
-    ...(mergeConstraints === 'start' && defaultConstraints),
-    ...videoConstraints,
-    ...(cameraResolutionType && {
-      width: {
-        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].width
-      },
-      height: {
-        [cameraResolutionMode]: VIDEO_RESOLUTION_SIZE[cameraResolutionType].height
-      }
-    }),
-    ...(mergeConstraints === 'end' && defaultConstraints)
+    ...customConstraints,
+    ...defaultConstraints
   };
 };

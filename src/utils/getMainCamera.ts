@@ -1,8 +1,8 @@
 export type GetMainCameraParams = RegExp | { front?: RegExp; back?: RegExp };
 
 export const DEFAULT_MAIN_CAMERA_REG_EXP = {
-  BACK: /(?=.*\bback\b)(?=.*\b0\b)/,
-  FRONT: /\bfront\b/
+  back: /(?=.*\bback\b)(?=.*\b0\b)/,
+  front: /\bfront\b/
 };
 
 export const getMainCamera = async (params?: GetMainCameraParams, isFrontCamera?: boolean) => {
@@ -13,13 +13,14 @@ export const getMainCamera = async (params?: GetMainCameraParams, isFrontCamera?
     if (cameras.length <= 2) return null;
 
     let regExp: RegExp | undefined;
+    const cameraKey = isFrontCamera ? 'front' : 'back';
 
     if (typeof params === 'object') {
-      regExp = params instanceof RegExp ? params : params[isFrontCamera ? 'front' : 'back'];
+      regExp = params instanceof RegExp ? params : params[cameraKey];
     }
 
     return cameras.find(({ label }) =>
-      label.match(regExp ?? DEFAULT_MAIN_CAMERA_REG_EXP[isFrontCamera ? 'FRONT' : 'BACK'])
+      label.match(regExp ?? DEFAULT_MAIN_CAMERA_REG_EXP[cameraKey])
     );
   }
 

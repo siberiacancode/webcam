@@ -1,3 +1,5 @@
+// ✅ important
+// Implementations for each browser need to be supported
 export const requestAnimationFrame =
   window.requestAnimationFrame ||
   window.mozRequestAnimationFrame ||

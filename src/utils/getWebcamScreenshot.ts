@@ -7,10 +7,12 @@ export interface GetWebcamScreenshotOptions extends GetVideoFrameCanvasOptions {
 }
 
 export const getWebcamScreenshot = (
-  source?: HTMLVideoElement | null,
+  source: HTMLVideoElement,
   { format = 'image/jpeg', quality = 1, ...options }: GetWebcamScreenshotOptions = {}
 ) => {
   const canvas = getVideoFrameCanvas(source, options);
 
-  return canvas && canvas.toDataURL(format, quality);
+  if (canvas) {
+    return canvas.toDataURL(format, quality);
+  }
 };

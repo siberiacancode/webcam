@@ -1,3 +1,5 @@
+// ✅ important
+// Implementations for each browser need to be supported
 export const getUserMediaFunction =
   typeof navigator !== 'undefined' &&
   (navigator.getUserMedia ||
@@ -5,6 +7,8 @@ export const getUserMediaFunction =
     navigator.mozGetUserMedia ||
     navigator.msGetUserMedia);
 
+// ✅ important
+// Polyfill to support legacy web-api
 export const getUserMedia = (constraints: MediaStreamConstraints): Promise<MediaStream> => {
   if (!navigator.mediaDevices?.getUserMedia) {
     if (!getUserMediaFunction) {
