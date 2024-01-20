@@ -9,7 +9,7 @@ const getSourceIdByConstraints = (constraints?: MediaTrackConstraints | boolean)
   if (typeof deviceId === 'string') return deviceId;
 
   if (Array.isArray(deviceId)) {
-    return deviceId[0] ?? null;
+    return deviceId[0] || null;
   }
 
   if (typeof deviceId === 'object' && deviceId.ideal) {
@@ -44,8 +44,8 @@ export const getConstraintsBySource = (constraints: MediaStreamConstraints) =>
       const audioSourceId = getSourceIdByConstraints(constraints.audio);
 
       resolve({
-        audio: getOptionalSourceConstraints(audioSourceId ?? audioSource),
-        video: getOptionalSourceConstraints(videoSourceId ?? videoSource)
+        audio: getOptionalSourceConstraints(audioSourceId || audioSource),
+        video: getOptionalSourceConstraints(videoSourceId || videoSource)
       });
     });
   });

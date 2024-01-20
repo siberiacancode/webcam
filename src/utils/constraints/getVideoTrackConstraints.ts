@@ -61,7 +61,7 @@ export const getVideoTrackConstraints = async (
       useFrontCamera
     );
 
-    if (mainCamera?.deviceId) {
+    if (mainCamera && mainCamera.deviceId) {
       customConstraints.deviceId = { exact: mainCamera.deviceId };
     }
   }

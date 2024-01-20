@@ -5,6 +5,7 @@ import type { UseMediaStreamParams } from '../../hooks';
 import { useVideoSourceFromStream } from '../../hooks/useVideoSourceFromStream';
 import type { GetVideoFrameCanvasOptions, GetVideoFrameDataUrlOptions } from '../../utils';
 import { getVideoFrameCanvas, getVideoFrameDataUrl } from '../../utils';
+import { noop } from '../../utils/noop';
 
 type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;
 
@@ -40,6 +41,7 @@ export const Webcam: FC<WebcamProps> = ({
   muted = true,
   style = {},
   children,
+  onLoadedMetadata = noop,
   onStreamRequest,
   onStreamError,
   onStreamStart,
@@ -47,10 +49,10 @@ export const Webcam: FC<WebcamProps> = ({
   ...props
 }) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
-  const videoRef = externalVideoRef ?? internalVideoRef;
+  const videoRef = externalVideoRef || internalVideoRef;
 
-  const onLoadedMetadata = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
-    props.onLoadedMetadata?.(event);
+  const onStreamLoad = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
+    onLoadedMetadata(event);
     event.currentTarget.play();
   };
 
@@ -82,7 +84,7 @@ export const Webcam: FC<WebcamProps> = ({
         ref={videoRef}
         src={streamSrc}
         controls={false}
-        onLoadedMetadata={onLoadedMetadata}
+        onLoadedMetadata={onStreamLoad}
         style={{
           ...style,
           ...(mirrored && {
@@ -95,9 +97,13 @@ export const Webcam: FC<WebcamProps> = ({
         ? children({
             videoElement: videoRef.current,
             getCanvas: (options?: GetVideoFrameCanvasOptions) =>
-              videoRef.current ? getVideoFrameCanvas(videoRef.current, options) : undefined,
+              videoRef.current
+                ? getVideoFrameCanvas(videoRef.current, { ...options, mirrored })
+                : undefined,
             getScreenshot: (options?: GetVideoFrameDataUrlOptions) =>
-              videoRef.current ? getVideoFrameDataUrl(videoRef.current, options) : undefined
+              videoRef.current
+                ? getVideoFrameDataUrl(videoRef.current, { ...options, mirrored })
+                : undefined
           })
         : children}
     </>

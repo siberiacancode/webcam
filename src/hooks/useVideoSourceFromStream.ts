@@ -25,7 +25,6 @@ export const useVideoSourceFromStream = (
 
   const onStreamStop = () => {
     if (!streamSource) return;
-
     window.URL.revokeObjectURL(streamSource);
   };
 

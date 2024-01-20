@@ -1,6 +1,8 @@
 import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
+import { noop } from '../utils/noop';
+
 import { useAnimationFrame } from './useAnimationFrame';
 
 type HTMLVideoElementEvent = HTMLVideoElementEventMap[keyof HTMLVideoElementEventMap];
@@ -20,24 +22,27 @@ export const useVideoAnimationByEvent = (
   videoRef: RefObject<HTMLVideoElement>,
   handler: (time?: number) => void,
   {
-    start: { eventKey: startEventKey = 'loadedmetadata', ...startEvent } = {},
-    stop: { eventKey: stopEventKey = 'ended', ...stopEvent } = {}
+    start: {
+      eventKey: startEventKey = 'loadedmetadata',
+      handler: startEventHandler = noop,
+      ...startEvent
+    } = {},
+    stop: { eventKey: stopEventKey = 'ended', handler: stopEventHandler = noop, ...stopEvent } = {}
   }: UseVideoAnimationByEventOptions = {}
 ) => {
   const [requestAnimationFrame, cancelAnimationFrame] = useAnimationFrame(handler);
 
   useEffect(() => {
     const videoElement = videoRef.current;
-
     if (!videoElement) return;
 
     const onStartEvent = (e: HTMLVideoElementEvent) => {
       requestAnimationFrame();
-      startEvent.handler?.(e);
+      startEventHandler(e);
     };
     const onEndEvent = (e: HTMLVideoElementEvent) => {
       cancelAnimationFrame();
-      stopEvent.handler?.(e);
+      stopEventHandler(e);
     };
 
     videoElement.addEventListener(startEventKey, onStartEvent, startEvent.options);

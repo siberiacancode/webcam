@@ -1,6 +1,6 @@
 {
   "name": "react-webcam-ultimate",
-  "description": "Ultimate tool for displaying and working with webcam stream in your React application",
+  "description": "Ultimate tool for working with media stream and displaying it in your React application",
   "version": "1.0.0",
   "license": "MIT",
   "author": {

@@ -6,7 +6,7 @@ export const DEFAULT_MAIN_CAMERA_REG_EXP = {
 };
 
 export const getMainCamera = async (params?: GetMainCameraParams, isFrontCamera?: boolean) => {
-  if (navigator.mediaDevices?.enumerateDevices) {
+  if ('mediaDevices' in navigator && navigator.mediaDevices.enumerateDevices) {
     const mediaDevices = await navigator.mediaDevices.enumerateDevices();
     const cameras = mediaDevices.filter(({ kind }) => kind === 'videoinput');
 
@@ -20,7 +20,7 @@ export const getMainCamera = async (params?: GetMainCameraParams, isFrontCamera?
     }
 
     return cameras.find(({ label }) =>
-      label.match(regExp ?? DEFAULT_MAIN_CAMERA_REG_EXP[cameraKey])
+      label.match(regExp || DEFAULT_MAIN_CAMERA_REG_EXP[cameraKey])
     );
   }
 

@@ -10,7 +10,7 @@ export const getUserMediaFunction =
 // ✅ important
 // Polyfill to support legacy web-api
 export const getUserMedia = (constraints: MediaStreamConstraints): Promise<MediaStream> => {
-  if (!navigator.mediaDevices?.getUserMedia) {
+  if (!('mediaDevices' in navigator && navigator.mediaDevices.getUserMedia)) {
     if (!getUserMediaFunction) {
       return Promise.reject(
         new Error('Function getUserMedia of Navigator is not implemented in this browser')

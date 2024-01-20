@@ -7,6 +7,7 @@ import {
   getMediaStreamConstraints,
   stopMediaStream
 } from '../utils';
+import { noop } from '../utils/noop';
 
 export interface UseMediaStreamParams extends MediaTrackConstraintsOptions {
   disableStream?: boolean;
@@ -20,10 +21,10 @@ export interface UseMediaStreamParams extends MediaTrackConstraintsOptions {
 }
 
 export const useMediaStream = ({
-  onStreamRequest,
-  onStreamError,
-  onStreamStart,
-  onStreamStop,
+  onStreamRequest = noop,
+  onStreamError = noop,
+  onStreamStart = noop,
+  onStreamStop = noop,
   disableStream,
   requestTimeLimit,
   videoConstraints,
@@ -55,13 +56,13 @@ export const useMediaStream = ({
 
     const requesMediaStream = async (params: GetMediaStreamConstraintsParams) => {
       try {
-        onStreamRequest?.();
+        onStreamRequest();
 
         const mediaStream = await getMediaStream(params, requestTimeLimit);
 
-        onStreamStart?.(mediaStream);
+        onStreamStart(mediaStream);
       } catch (error) {
-        onStreamError?.(error as Error);
+        onStreamError(error as Error);
       }
     };
 
@@ -75,7 +76,7 @@ export const useMediaStream = ({
     }
 
     return () => {
-      onStreamStop?.(runningStream);
+      onStreamStop(runningStream);
       if (!runningStream) return;
       stopMediaStream(runningStream);
     };
