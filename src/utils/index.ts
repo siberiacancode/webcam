@@ -5,5 +5,5 @@ export * from './getMainCamera';
 export * from './getMediaStream';
 export * from './getUserMedia';
 export * from './getVideoFrameCanvas';
-export * from './getWebcamScreenshot';
+export * from './getVideoFrameDataUrl';
 export * from './stopMediaStream';

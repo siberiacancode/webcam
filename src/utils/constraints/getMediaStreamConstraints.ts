@@ -1,24 +1,24 @@
 import { getConstraintsBySource } from './getConstraintsBySource';
-import type { VideoTrackConstraintsParams } from './getVideoTrackConstraints';
+import type { VideoTrackConstraintsOptions } from './getVideoTrackConstraints';
 import { getVideoTrackConstraints } from './getVideoTrackConstraints';
 
-export interface MediaTrackConstraintsParams extends VideoTrackConstraintsParams {
+export interface MediaTrackConstraintsOptions extends VideoTrackConstraintsOptions {
   muted?: boolean;
 }
 
-export interface GetMediaStreamConstraintsOptions {
-  params?: MediaTrackConstraintsParams;
+export interface GetMediaStreamConstraintsParams {
+  options?: MediaTrackConstraintsOptions;
   constraints?: MediaStreamConstraints;
 }
 
 export const getMediaStreamConstraints = async ({
   constraints: { video = true, audio = false, ...constraints } = {},
-  params: { muted = true, ...params } = {}
-}: GetMediaStreamConstraintsOptions = {}) => {
+  options: { muted = true, ...options } = {}
+}: GetMediaStreamConstraintsParams = {}) => {
   if ('mediaDevices' in navigator) {
     const videoConstraints = await getVideoTrackConstraints(
       typeof video === 'object' ? video : {},
-      params
+      options
     );
 
     return {

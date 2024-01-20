@@ -1,52 +1,39 @@
 import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject, SyntheticEvent } from 'react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
-import type {
-  GetMediaStreamConstraintsOptions,
-  GetVideoFrameCanvasOptions,
-  GetWebcamScreenshotOptions,
-  MediaTrackConstraintsParams
-} from '../../utils';
-import {
-  applyMediaStreamConstraints,
-  getMediaStream,
-  getMediaStreamConstraints,
-  getVideoFrameCanvas,
-  getWebcamScreenshot,
-  stopMediaStream
-} from '../../utils';
+import type { UseMediaStreamParams } from '../../hooks';
+import { useVideoSourceFromStream } from '../../hooks/useVideoSourceFromStream';
+import type { GetVideoFrameCanvasOptions, GetVideoFrameDataUrlOptions } from '../../utils';
+import { getVideoFrameCanvas, getVideoFrameDataUrl } from '../../utils';
 
 type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;
 
 export type WebcamRenderProps = (options: {
   getCanvas: (options?: GetVideoFrameCanvasOptions) => HTMLCanvasElement | undefined;
-  getScreenshot: (options?: GetWebcamScreenshotOptions) => string | undefined;
+  getScreenshot: (options?: GetVideoFrameDataUrlOptions) => string | undefined;
   videoElement: HTMLVideoElement | null;
 }) => ReactNode;
 
-export interface WebcamProps extends VideoElementProps, MediaTrackConstraintsParams {
-  mirrored?: boolean;
-  stream?: MediaStream;
-  requestTimeLimit?: number;
-  innerRef?: RefObject<HTMLVideoElement>;
+interface WebcamProps extends VideoElementProps, UseMediaStreamParams {
   children?: ReactNode | WebcamRenderProps;
-  audioConstraints?: MediaTrackConstraints;
-  videoConstraints?: MediaTrackConstraints;
-  onStreamRequest?: () => void;
-  onStreamError?: (error: Error) => void;
-  onStreamStart?: (stream: MediaStream) => void;
-  onStreamStop?: (stream: MediaStream) => void;
-  onStreamLoad?: (event: SyntheticEvent<HTMLVideoElement, Event>) => void;
+  innerRef?: RefObject<HTMLVideoElement>;
+  mirrored?: boolean;
 }
 
+/**
+ * Renders the Webcam component and handles the requesting and displaying of the media stream.
+ *
+ * @param {WebcamProps} props - The props for the Webcam component.
+ * @return {ReactElement} The rendered Webcam component.
+ */
 export const Webcam: FC<WebcamProps> = ({
   innerRef: externalVideoRef,
-  stream: externalStream,
   cameraResolutionMode,
   cameraResolutionType,
   videoConstraints,
   audioConstraints,
   requestTimeLimit,
+  disableStream,
   frontCamera,
   mainCamera,
   mirrored = true,
@@ -57,90 +44,24 @@ export const Webcam: FC<WebcamProps> = ({
   onStreamError,
   onStreamStart,
   onStreamStop,
-  onStreamLoad,
   ...props
 }) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
-  const internalStreamRef = useRef<MediaStream | null>(null);
-  const [videoSrc, setVideoSrc] = useState<string>();
-
   const videoRef = externalVideoRef ?? internalVideoRef;
 
   const onLoadedMetadata = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
-    onStreamLoad?.(event);
+    props.onLoadedMetadata?.(event);
     event.currentTarget.play();
   };
 
-  const setMediaStream = (stream: MediaStream) => {
-    if (!videoRef.current) return;
-
-    if ('srcObject' in videoRef.current) {
-      videoRef.current.srcObject = stream;
-      return;
-    }
-
-    // @ts-ignore
-    setVideoSrc(window.URL.createObjectURL(stream));
-  };
-
-  const requestUserMedia = async (options: GetMediaStreamConstraintsOptions) => {
-    try {
-      onStreamRequest?.();
-
-      const mediaStream = await getMediaStream(options, requestTimeLimit);
-
-      onStreamStart?.(mediaStream);
-      setMediaStream(mediaStream);
-      internalStreamRef.current = mediaStream;
-    } catch (error) {
-      onStreamError?.(error as Error);
-    }
-  };
-
-  useEffect(() => {
-    if (externalStream) {
-      setMediaStream(externalStream);
-    }
-  }, [externalStream]);
-
-  useEffect(() => {
-    const mediaStream = internalStreamRef.current;
-
-    const options: GetMediaStreamConstraintsOptions = {
-      constraints: {
-        video: videoConstraints,
-        audio: audioConstraints
-      },
-      params: {
-        cameraResolutionMode,
-        cameraResolutionType,
-        frontCamera,
-        mainCamera,
-        muted
-      }
-    };
-
-    if (mediaStream) {
-      getMediaStreamConstraints(options)
-        .then((constraints) => applyMediaStreamConstraints(mediaStream, constraints))
-        .catch(() => requestUserMedia(options));
-      return;
-    }
-
-    requestUserMedia(options);
-
-    return () => {
-      if (videoSrc) {
-        window.URL.revokeObjectURL(videoSrc);
-      }
-
-      if (!mediaStream) return;
-
-      onStreamStop?.(mediaStream);
-      stopMediaStream(mediaStream);
-    };
-  }, [
+  const streamSrc = useVideoSourceFromStream(videoRef, {
+    disableStream,
     requestTimeLimit,
+    // STREAM HANDLERS:
+    onStreamRequest,
+    onStreamError,
+    onStreamStart,
+    onStreamStop,
     // DEFAULT CONSTRAINTS:
     videoConstraints,
     audioConstraints,
@@ -150,7 +71,7 @@ export const Webcam: FC<WebcamProps> = ({
     frontCamera,
     mainCamera,
     muted
-  ]);
+  });
 
   return (
     <>
@@ -159,7 +80,7 @@ export const Webcam: FC<WebcamProps> = ({
         playsInline
         muted={muted}
         ref={videoRef}
-        src={videoSrc}
+        src={streamSrc}
         controls={false}
         onLoadedMetadata={onLoadedMetadata}
         style={{
@@ -175,8 +96,8 @@ export const Webcam: FC<WebcamProps> = ({
             videoElement: videoRef.current,
             getCanvas: (options?: GetVideoFrameCanvasOptions) =>
               videoRef.current ? getVideoFrameCanvas(videoRef.current, options) : undefined,
-            getScreenshot: (options?: GetWebcamScreenshotOptions) =>
-              videoRef.current ? getWebcamScreenshot(videoRef.current, options) : undefined
+            getScreenshot: (options?: GetVideoFrameDataUrlOptions) =>
+              videoRef.current ? getVideoFrameDataUrl(videoRef.current, options) : undefined
           })
         : children}
     </>

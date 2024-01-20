@@ -28,7 +28,7 @@ export const VIDEO_RESOLUTION_SIZE: Record<CameraResolutionType, VideoResolution
   }
 };
 
-export interface VideoTrackConstraintsParams {
+export interface VideoTrackConstraintsOptions {
   cameraResolutionMode?: CameraResolutionMode;
   cameraResolutionType?: CameraResolutionType;
   mainCamera?: GetMainCameraParams | boolean;
@@ -42,7 +42,7 @@ export const getVideoTrackConstraints = async (
     frontCamera: useFrontCamera,
     cameraResolutionType,
     cameraResolutionMode = 'ideal'
-  }: VideoTrackConstraintsParams
+  }: VideoTrackConstraintsOptions
 ) => {
   const customConstraints: MediaTrackConstraints = {
     ...(cameraResolutionType && {

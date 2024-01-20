@@ -1,10 +1,10 @@
 import { canGetUserMedia } from './canGetUserMedia';
-import type { GetMediaStreamConstraintsOptions } from './constraints';
+import type { GetMediaStreamConstraintsParams } from './constraints';
 import { getMediaStreamConstraints } from './constraints';
 import { getUserMedia } from './getUserMedia';
 
 export const getMediaStream = async (
-  options: GetMediaStreamConstraintsOptions,
+  params: GetMediaStreamConstraintsParams,
   timeLimitMs?: number
 ): Promise<MediaStream> => {
   if (!canGetUserMedia()) {
@@ -12,7 +12,7 @@ export const getMediaStream = async (
   }
 
   let mediaStream: MediaStream | undefined;
-  const mediaStreamConstraints = await getMediaStreamConstraints(options);
+  const mediaStreamConstraints = await getMediaStreamConstraints(params);
 
   if (timeLimitMs) {
     mediaStream = await new Promise((resolve, reject) => {

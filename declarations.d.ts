@@ -17,5 +17,3 @@ interface Window {
   mozCancelAnimationFrame?: Window['cancelAnimationFrame'];
   webkitCancelAnimationFrame?: Window['cancelAnimationFrame'];
 }
-
-type ImageFormat = 'image/webp' | 'image/png' | 'image/jpeg';
