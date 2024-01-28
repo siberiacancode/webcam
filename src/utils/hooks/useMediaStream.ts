@@ -1,17 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-import type { GetMediaStreamConstraintsParams, MediaTrackConstraintsOptions } from '../utils';
+import type { GetMediaStreamConstraintsParams, MediaTrackConstraintsOptions } from '../helpers';
 import {
   applyMediaStreamConstraints,
   getMediaStream,
   getMediaStreamConstraints,
   stopMediaStream
-} from '../utils';
-import { noop } from '../utils/noop';
+} from '../helpers';
+
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export interface UseMediaStreamParams extends MediaTrackConstraintsOptions {
-  disableStream?: boolean;
+  disable?: boolean;
   requestTimeLimit?: number;
+  applyConstraints?: boolean;
   audioConstraints?: MediaTrackConstraints;
   videoConstraints?: MediaTrackConstraints;
   onStreamRequest?: () => void;
@@ -21,11 +23,12 @@ export interface UseMediaStreamParams extends MediaTrackConstraintsOptions {
 }
 
 export const useMediaStream = ({
-  onStreamRequest = noop,
-  onStreamError = noop,
-  onStreamStart = noop,
-  onStreamStop = noop,
-  disableStream,
+  onStreamRequest,
+  onStreamError,
+  onStreamStart,
+  onStreamStop,
+  disable,
+  applyConstraints,
   requestTimeLimit,
   videoConstraints,
   audioConstraints,
@@ -36,9 +39,24 @@ export const useMediaStream = ({
   muted
 }: UseMediaStreamParams = {}) => {
   const streamRef = useRef<MediaStream>();
+  const handlerRef = useRef({
+    request: onStreamRequest,
+    error: onStreamError,
+    start: onStreamStart,
+    stop: onStreamStop
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    handlerRef.current = {
+      request: onStreamRequest,
+      error: onStreamError,
+      start: onStreamStart,
+      stop: onStreamStop
+    };
+  }, [onStreamRequest, onStreamError, onStreamStart, onStreamStop]);
 
   useEffect(() => {
-    if (disableStream) return;
+    if (disable) return;
 
     const streamConstraintsParams: GetMediaStreamConstraintsParams = {
       constraints: {
@@ -56,18 +74,22 @@ export const useMediaStream = ({
 
     const requesMediaStream = async (params: GetMediaStreamConstraintsParams) => {
       try {
-        onStreamRequest();
+        if (handlerRef.current.request) {
+          handlerRef.current.request();
+        }
 
         const mediaStream = await getMediaStream(params, requestTimeLimit);
 
-        onStreamStart(mediaStream);
+        if (!handlerRef.current.start) return;
+        handlerRef.current.start(mediaStream);
       } catch (error) {
-        onStreamError(error as Error);
+        if (!handlerRef.current.error) return;
+        handlerRef.current.error(error as Error);
       }
     };
 
     const runningStream = streamRef.current;
-    if (runningStream) {
+    if (applyConstraints && runningStream) {
       getMediaStreamConstraints(streamConstraintsParams)
         .then((constraints) => applyMediaStreamConstraints(runningStream, constraints))
         .catch(() => requesMediaStream(streamConstraintsParams));
@@ -76,12 +98,16 @@ export const useMediaStream = ({
     }
 
     return () => {
-      onStreamStop(runningStream);
+      if (handlerRef.current.stop) {
+        handlerRef.current.stop(runningStream);
+      }
       if (!runningStream) return;
       stopMediaStream(runningStream);
     };
   }, [
-    disableStream,
+    // STREAM PARAMS:
+    disable,
+    applyConstraints,
     requestTimeLimit,
     // DEFAULT CONSTRAINTS:
     videoConstraints,

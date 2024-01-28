@@ -2,10 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
-export const useAnimationFrame = (
-  callback: (time: number) => void,
-  active?: boolean
-): [(timestamp?: DOMHighResTimeStamp) => void, () => void] => {
+export const useAnimationFrame = (callback: (time: number) => void, active?: boolean) => {
   const animationFrameRequestRef = useRef<number>();
   const previousTimestampRef = useRef<number>();
   const savedHandlerRef = useRef(callback);
@@ -30,8 +27,6 @@ export const useAnimationFrame = (
   };
 
   useEffect(() => {
-    if (typeof active !== 'boolean') return;
-
     if (active) {
       animationFrameRequestRef.current = requestAnimationFrame(onFrameRequest);
       return;
@@ -41,5 +36,8 @@ export const useAnimationFrame = (
     return () => onFrameCancel();
   }, [active]);
 
-  return [onFrameRequest, onFrameCancel];
+  return {
+    request: onFrameRequest,
+    cancel: onFrameCancel
+  };
 };

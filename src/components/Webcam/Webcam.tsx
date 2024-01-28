@@ -1,23 +1,24 @@
 import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject, SyntheticEvent } from 'react';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import type { UseMediaStreamParams } from '../../hooks';
-import { useVideoSourceFromStream } from '../../hooks/useVideoSourceFromStream';
-import type { GetVideoFrameCanvasOptions, GetVideoFrameDataUrlOptions } from '../../utils';
-import { getVideoFrameCanvas, getVideoFrameDataUrl } from '../../utils';
-import { noop } from '../../utils/noop';
+import type { UseMediaStreamParams } from '../../utils/hooks';
+
+import type { GetVideoFrameCanvasOptions, GetWebcamSnapshotOptions } from './helpers';
+import { getVideoFrameCanvas, getWebcamSnapshot } from './helpers';
+import { useWebcam } from './hooks';
 
 type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;
 
 export type WebcamRenderProps = (options: {
   getCanvas: (options?: GetVideoFrameCanvasOptions) => HTMLCanvasElement | undefined;
-  getScreenshot: (options?: GetVideoFrameDataUrlOptions) => string | undefined;
+  getSnapshot: (options?: GetWebcamSnapshotOptions) => string | undefined;
   videoElement: HTMLVideoElement | null;
 }) => ReactNode;
 
 interface WebcamProps extends VideoElementProps, UseMediaStreamParams {
   children?: ReactNode | WebcamRenderProps;
   innerRef?: RefObject<HTMLVideoElement>;
+  stream?: MediaStream;
   mirrored?: boolean;
 }
 
@@ -29,19 +30,21 @@ interface WebcamProps extends VideoElementProps, UseMediaStreamParams {
  */
 export const Webcam: FC<WebcamProps> = ({
   innerRef: externalVideoRef,
+  stream: externalStream,
   cameraResolutionMode,
   cameraResolutionType,
   videoConstraints,
   audioConstraints,
   requestTimeLimit,
-  disableStream,
+  applyConstraints,
   frontCamera,
   mainCamera,
+  disable,
   mirrored = true,
   muted = true,
   style = {},
   children,
-  onLoadedMetadata = noop,
+  onLoadedMetadata,
   onStreamRequest,
   onStreamError,
   onStreamStart,
@@ -51,13 +54,17 @@ export const Webcam: FC<WebcamProps> = ({
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
   const videoRef = externalVideoRef || internalVideoRef;
 
-  const onStreamLoad = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
-    onLoadedMetadata(event);
+  const onMediaStreamLoad = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
+    if (onLoadedMetadata) {
+      onLoadedMetadata(event);
+    }
     event.currentTarget.play();
   };
 
-  const streamSrc = useVideoSourceFromStream(videoRef, {
-    disableStream,
+  const stream = useWebcam(videoRef, {
+    // STREAM PARAMS:
+    disable: disable || !!externalStream,
+    applyConstraints,
     requestTimeLimit,
     // STREAM HANDLERS:
     onStreamRequest,
@@ -75,6 +82,16 @@ export const Webcam: FC<WebcamProps> = ({
     muted
   });
 
+  useEffect(() => {
+    if (!externalStream) return;
+
+    stream.start(externalStream);
+
+    return () => {
+      stream.stop(externalStream);
+    };
+  }, [externalStream]);
+
   return (
     <>
       <video
@@ -82,9 +99,9 @@ export const Webcam: FC<WebcamProps> = ({
         playsInline
         muted={muted}
         ref={videoRef}
-        src={streamSrc}
         controls={false}
-        onLoadedMetadata={onStreamLoad}
+        src={stream.source}
+        onLoadedMetadata={onMediaStreamLoad}
         style={{
           ...style,
           ...(mirrored && {
@@ -100,9 +117,9 @@ export const Webcam: FC<WebcamProps> = ({
               videoRef.current
                 ? getVideoFrameCanvas(videoRef.current, { ...options, mirrored })
                 : undefined,
-            getScreenshot: (options?: GetVideoFrameDataUrlOptions) =>
+            getSnapshot: (options?: GetWebcamSnapshotOptions) =>
               videoRef.current
-                ? getVideoFrameDataUrl(videoRef.current, { ...options, mirrored })
+                ? getWebcamSnapshot(videoRef.current, { ...options, mirrored })
                 : undefined
           })
         : children}

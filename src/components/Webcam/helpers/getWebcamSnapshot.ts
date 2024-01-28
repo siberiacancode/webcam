@@ -1,14 +1,14 @@
 import type { GetVideoFrameCanvasOptions } from './getVideoFrameCanvas';
 import { getVideoFrameCanvas } from './getVideoFrameCanvas';
 
-export interface GetVideoFrameDataUrlOptions extends GetVideoFrameCanvasOptions {
+export interface GetWebcamSnapshotOptions extends GetVideoFrameCanvasOptions {
   format?: 'image/webp' | 'image/png' | 'image/jpeg';
   quality?: number;
 }
 
-export const getVideoFrameDataUrl = (
+export const getWebcamSnapshot = (
   source: HTMLVideoElement,
-  { format = 'image/jpeg', quality = 1, ...options }: GetVideoFrameDataUrlOptions = {}
+  { format = 'image/jpeg', quality = 1, ...options }: GetWebcamSnapshotOptions = {}
 ) => {
   const canvas = getVideoFrameCanvas(source, options);
 

@@ -12,8 +12,8 @@ export const getVideoFrameCanvas = (
   const { videoWidth: canvasWidth, videoHeight: canvasHeight } = source;
 
   const canvas = document.createElement('canvas');
-  canvas.height = options.height || canvasHeight;
   canvas.width = options.width || canvasWidth;
+  canvas.height = options.height || canvasHeight;
 
   const context = canvas.getContext('2d');
   if (!context) return;
@@ -24,7 +24,7 @@ export const getVideoFrameCanvas = (
   }
 
   context.imageSmoothingEnabled = imageSmoothingEnabled;
-  context.drawImage(source, 0, 0, canvasWidth, canvasHeight);
+  context.drawImage(source, 0, 0, canvas.width, canvas.height);
 
   if (mirrored) {
     context.scale(-1, 1);

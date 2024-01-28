@@ -1,6 +1,7 @@
+import type { GetMediaStreamConstraintsParams } from '../constraints';
+import { getMediaStreamConstraints } from '../constraints';
+
 import { canGetUserMedia } from './canGetUserMedia';
-import type { GetMediaStreamConstraintsParams } from './constraints';
-import { getMediaStreamConstraints } from './constraints';
 import { getUserMedia } from './getUserMedia';
 
 export const getMediaStream = async (
