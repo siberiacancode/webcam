@@ -1,51 +1,52 @@
-const getOptionalSourceConstraints = (id: string | null) =>
-  ({ optional: [{ sourceId: id }] }) as MediaTrackConstraints;
+import { getMediaTrackSources } from '../getMediaTrackSources';
+
+const getOptionalSourceConstraints = (id?: string) => {
+  if (!id) return;
+
+  return { optional: [{ sourceId: id }] } as MediaTrackConstraints;
+};
 
 const getSourceIdByConstraints = (constraints?: MediaTrackConstraints | boolean) => {
-  if (typeof constraints !== 'object') return null;
+  if (typeof constraints !== 'object') return;
 
   const { deviceId } = constraints;
 
   if (typeof deviceId === 'string') return deviceId;
 
-  if (Array.isArray(deviceId)) {
-    return deviceId[0] || null;
-  }
+  if (Array.isArray(deviceId)) return deviceId[0];
 
   if (typeof deviceId === 'object' && deviceId.ideal) {
     return Array.isArray(deviceId.ideal) ? deviceId.ideal[0] : deviceId.ideal;
   }
-
-  return null;
 };
 
 // ✅ important
 // Deprecated web-api
-export const getConstraintsBySource = (constraints: MediaStreamConstraints) =>
-  new Promise<MediaStreamConstraints>((resolve) => {
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    MediaStreamTrack.getSources((sources: MediaStreamTrack[]) => {
-      let audioSource: string | null = null;
-      let videoSource: string | null = null;
+export const getConstraintsBySource = async (constraints: MediaStreamConstraints) => {
+  const result: MediaStreamConstraints = { video: undefined, audio: undefined };
 
-      sources.forEach((source: MediaStreamTrack) => {
-        if (source.kind === 'video') {
-          videoSource = source.id;
-          return;
-        }
+  const sources = await getMediaTrackSources();
+  if (!sources) return result;
 
-        if (source.kind === 'audio') {
-          audioSource = source.id;
-        }
-      });
+  let videoSource: string | undefined;
+  let audioSource: string | undefined;
 
-      const videoSourceId = getSourceIdByConstraints(constraints.video);
-      const audioSourceId = getSourceIdByConstraints(constraints.audio);
+  sources.forEach((source) => {
+    if (source.kind === 'video') {
+      videoSource = source.id;
+      return;
+    }
 
-      resolve({
-        audio: getOptionalSourceConstraints(audioSourceId || audioSource),
-        video: getOptionalSourceConstraints(videoSourceId || videoSource)
-      });
-    });
+    if (source.kind === 'audio') {
+      audioSource = source.id;
+    }
   });
+
+  const videoSourceId = getSourceIdByConstraints(constraints.video);
+  const audioSourceId = getSourceIdByConstraints(constraints.audio);
+
+  result.audio = getOptionalSourceConstraints(videoSourceId ?? videoSource);
+  result.video = getOptionalSourceConstraints(audioSourceId ?? audioSource);
+
+  return result;
+};

@@ -36,7 +36,7 @@ export interface VideoTrackConstraintsOptions {
 }
 
 export const getVideoTrackConstraints = async (
-  defaultConstraints: MediaTrackConstraints,
+  externalConstraints: MediaTrackConstraints,
   {
     mainCamera: useMainCamera,
     frontCamera: useFrontCamera,
@@ -61,7 +61,7 @@ export const getVideoTrackConstraints = async (
       useFrontCamera
     );
 
-    if (mainCamera && mainCamera.deviceId) {
+    if (mainCamera?.deviceId) {
       customConstraints.deviceId = { exact: mainCamera.deviceId };
     }
   }
@@ -70,8 +70,10 @@ export const getVideoTrackConstraints = async (
     customConstraints.facingMode = useFrontCamera ? 'user' : 'environment';
   }
 
-  return {
+  const finalConstraints: MediaTrackConstraints = {
     ...customConstraints,
-    ...defaultConstraints
+    ...externalConstraints
   };
+
+  return finalConstraints;
 };

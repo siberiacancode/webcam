@@ -6,23 +6,21 @@ export const DEFAULT_MAIN_CAMERA_REG_EXP = {
 };
 
 export const getMainCamera = async (params?: GetMainCameraParams, isFrontCamera?: boolean) => {
-  if ('mediaDevices' in navigator && navigator.mediaDevices.enumerateDevices) {
-    const mediaDevices = await navigator.mediaDevices.enumerateDevices();
-    const cameras = mediaDevices.filter(({ kind }) => kind === 'videoinput');
+  if (!('mediaDevices' in navigator && navigator.mediaDevices.enumerateDevices)) return;
 
-    if (cameras.length <= 2) return null;
+  const mediaDevices = await navigator.mediaDevices.enumerateDevices();
+  const cameras = mediaDevices.filter(({ kind }) => kind === 'videoinput');
 
-    let regExp: RegExp | undefined;
-    const cameraKey = isFrontCamera ? 'front' : 'back';
+  if (cameras.length <= 2) return;
 
-    if (typeof params === 'object') {
-      regExp = params instanceof RegExp ? params : params[cameraKey];
-    }
+  let regExp: RegExp | undefined;
+  const cameraKey = isFrontCamera ? 'front' : 'back';
 
-    return cameras.find(({ label }) =>
-      label.match(regExp || DEFAULT_MAIN_CAMERA_REG_EXP[cameraKey])
-    );
+  if (typeof params === 'object') {
+    regExp = params instanceof RegExp ? params : params[cameraKey];
   }
 
-  return null;
+  return cameras.find(({ label }) =>
+    (regExp ?? DEFAULT_MAIN_CAMERA_REG_EXP[cameraKey]).test(label)
+  );
 };

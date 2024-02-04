@@ -12,8 +12,8 @@ export const getVideoFrameCanvas = (
   const { videoWidth: canvasWidth, videoHeight: canvasHeight } = source;
 
   const canvas = document.createElement('canvas');
-  canvas.width = options.width || canvasWidth;
-  canvas.height = options.height || canvasHeight;
+  canvas.width = options.width ?? canvasWidth;
+  canvas.height = options.height ?? canvasHeight;
 
   const context = canvas.getContext('2d');
   if (!context) return;

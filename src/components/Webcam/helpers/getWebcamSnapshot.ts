@@ -11,8 +11,7 @@ export const getWebcamSnapshot = (
   { format = 'image/jpeg', quality = 1, ...options }: GetWebcamSnapshotOptions = {}
 ) => {
   const canvas = getVideoFrameCanvas(source, options);
+  if (!canvas) return;
 
-  if (canvas) {
-    return canvas.toDataURL(format, quality);
-  }
+  return canvas.toDataURL(format, quality);
 };

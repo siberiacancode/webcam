@@ -8,6 +8,7 @@ import { getVideoFrameCanvas, getWebcamSnapshot } from './helpers';
 import { useWebcam } from './hooks';
 
 type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;
+type AvailableUseMediaStreamParams = Omit<UseMediaStreamParams, 'disable'>;
 
 export type WebcamRenderProps = (options: {
   getCanvas: (options?: GetVideoFrameCanvasOptions) => HTMLCanvasElement | undefined;
@@ -15,12 +16,24 @@ export type WebcamRenderProps = (options: {
   videoElement: HTMLVideoElement | null;
 }) => ReactNode;
 
-interface WebcamProps extends VideoElementProps, UseMediaStreamParams {
+interface BaseWebcamProps extends VideoElementProps {
   children?: ReactNode | WebcamRenderProps;
   innerRef?: RefObject<HTMLVideoElement>;
-  stream?: MediaStream;
   mirrored?: boolean;
 }
+
+interface WebcamPropsWithInternalStream extends BaseWebcamProps, AvailableUseMediaStreamParams {
+  stream?: undefined;
+}
+
+interface WebcamPropsWithExternalStream extends BaseWebcamProps {
+  stream?: MediaStream;
+}
+
+type WebcamPropsEnumeration = WebcamPropsWithExternalStream &
+  Omit<WebcamPropsWithInternalStream, 'stream'>;
+
+export type WebcamProps = WebcamPropsWithInternalStream | WebcamPropsWithExternalStream;
 
 /**
  * Renders the Webcam component and handles the requesting and displaying of the media stream.
@@ -39,7 +52,6 @@ export const Webcam: FC<WebcamProps> = ({
   applyConstraints,
   frontCamera,
   mainCamera,
-  disable,
   mirrored = true,
   muted = true,
   style = {},
@@ -50,37 +62,41 @@ export const Webcam: FC<WebcamProps> = ({
   onStreamStart,
   onStreamStop,
   ...props
-}) => {
+}: WebcamPropsEnumeration) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
-  const videoRef = externalVideoRef || internalVideoRef;
+  const videoRef = externalVideoRef ?? internalVideoRef;
 
   const onMediaStreamLoad = (event: SyntheticEvent<HTMLVideoElement, Event>) => {
-    if (onLoadedMetadata) {
-      onLoadedMetadata(event);
-    }
+    onLoadedMetadata?.(event);
     event.currentTarget.play();
   };
 
-  const stream = useWebcam(videoRef, {
-    // STREAM PARAMS:
-    disable: disable || !!externalStream,
-    applyConstraints,
-    requestTimeLimit,
-    // STREAM HANDLERS:
-    onStreamRequest,
-    onStreamError,
-    onStreamStart,
-    onStreamStop,
-    // DEFAULT CONSTRAINTS:
-    videoConstraints,
-    audioConstraints,
-    // CUSTOM CONSTRAINTS:
-    cameraResolutionMode,
-    cameraResolutionType,
-    frontCamera,
-    mainCamera,
-    muted
-  });
+  const stream = useWebcam(
+    videoRef,
+    !externalStream
+      ? {
+          // STREAM PARAMS:
+          applyConstraints,
+          requestTimeLimit,
+          // STREAM HANDLERS:
+          onStreamRequest,
+          onStreamError,
+          onStreamStart,
+          onStreamStop,
+          // DEFAULT CONSTRAINTS:
+          videoConstraints,
+          audioConstraints,
+          // CUSTOM CONSTRAINTS:
+          cameraResolutionMode,
+          cameraResolutionType,
+          frontCamera,
+          mainCamera,
+          muted
+        }
+      : {
+          disable: true
+        }
+  );
 
   useEffect(() => {
     if (!externalStream) return;

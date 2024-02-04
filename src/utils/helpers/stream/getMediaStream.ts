@@ -9,7 +9,7 @@ export const getMediaStream = async (
   timeLimitMs?: number
 ): Promise<MediaStream> => {
   if (!canGetUserMedia()) {
-    throw new Error('Function getUserMedia of Navigator is not supported');
+    throw new Error('Method getUserMedia of Navigator is not supported');
   }
 
   let mediaStream: MediaStream | undefined;

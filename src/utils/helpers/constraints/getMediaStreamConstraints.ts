@@ -12,23 +12,34 @@ export interface GetMediaStreamConstraintsParams {
 }
 
 export const getMediaStreamConstraints = async ({
-  constraints: { video = true, audio = false, ...constraints } = {},
+  constraints: { video = true, audio = false, ...otherConstraints } = {},
   options: { muted = true, ...options } = {}
 }: GetMediaStreamConstraintsParams = {}) => {
-  if ('mediaDevices' in navigator) {
-    const videoConstraints = await getVideoTrackConstraints(
-      typeof video === 'object' ? video : {},
-      options
-    );
+  let videoConstraints: MediaStreamConstraints['video'];
+  let audioConstraints: MediaStreamConstraints['audio'];
 
-    return {
-      ...constraints,
-      ...(!muted && {
-        audio: typeof audio !== 'undefined' ? audio : true
-      }),
-      video: videoConstraints
-    };
+  if ('mediaDevices' in navigator) {
+    audioConstraints = audio;
+
+    if (video) {
+      videoConstraints = await getVideoTrackConstraints(
+        typeof video === 'object' ? video : {},
+        options
+      );
+    }
+  } else {
+    const constraintsBySource = await getConstraintsBySource({ video, audio });
+    audioConstraints = constraintsBySource.audio;
+    videoConstraints = constraintsBySource.video;
   }
 
-  return getConstraintsBySource({ video, audio });
+  const finalConstraints: MediaStreamConstraints = {
+    ...otherConstraints,
+    ...(!muted && {
+      audio: typeof audioConstraints !== 'undefined' ? audioConstraints : true
+    }),
+    video: typeof videoConstraints !== 'undefined' ? videoConstraints : true
+  };
+
+  return finalConstraints;
 };

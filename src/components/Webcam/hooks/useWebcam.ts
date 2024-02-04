@@ -29,11 +29,7 @@ export const useWebcam = (
   }, [onStreamStart, onStreamStop]);
 
   const handleStreamStart = (stream: MediaStream) => {
-    if (handlerRef.current.start) {
-      handlerRef.current.start(stream);
-    }
-
-    if (!stream) return;
+    handlerRef.current.start?.(stream);
 
     if (videoRef.current && 'srcObject' in videoRef.current) {
       // eslint-disable-next-line no-param-reassign
@@ -46,9 +42,7 @@ export const useWebcam = (
   };
 
   const handleStreamStop = (stream?: MediaStream) => {
-    if (handlerRef.current.stop) {
-      handlerRef.current.stop(stream);
-    }
+    handlerRef.current.stop?.(stream);
 
     if (!streamSource) return;
     window.URL.revokeObjectURL(streamSource);

@@ -74,17 +74,13 @@ export const useMediaStream = ({
 
     const requesMediaStream = async (params: GetMediaStreamConstraintsParams) => {
       try {
-        if (handlerRef.current.request) {
-          handlerRef.current.request();
-        }
+        handlerRef.current.request?.();
 
         const mediaStream = await getMediaStream(params, requestTimeLimit);
 
-        if (!handlerRef.current.start) return;
-        handlerRef.current.start(mediaStream);
+        handlerRef.current.start?.(mediaStream);
       } catch (error) {
-        if (!handlerRef.current.error) return;
-        handlerRef.current.error(error as Error);
+        handlerRef.current.error?.(error as Error);
       }
     };
 
@@ -98,9 +94,7 @@ export const useMediaStream = ({
     }
 
     return () => {
-      if (handlerRef.current.stop) {
-        handlerRef.current.stop(runningStream);
-      }
+      handlerRef.current.stop?.(runningStream);
       if (!runningStream) return;
       stopMediaStream(runningStream);
     };

@@ -24,13 +24,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/michael-mir/webcam-canvas",
+  "homepage": "https://github.com/siberiacancode/react-webcam-ultimate",
   "repository": {
     "type": "git",
-    "url": "https://github.com/michael-mir/webcam-canvas.git"
+    "url": "https://github.com/siberiacancode/react-webcam-ultimate.git"
   },
   "bugs": {
-    "url": "https://github.com/michael-mir/webcam-canvas/issues"
+    "url": "https://github.com/siberiacancode/react-webcam-ultimate/issues"
   },
   "engines": {
     "node": ">=14"

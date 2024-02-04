@@ -1,19 +1,20 @@
+import { hasGetUserMedia } from './hasGetUserMedia';
+
 // ✅ important
 // Implementations for each browser need to be supported
 export const getUserMediaFunction =
-  typeof navigator !== 'undefined' &&
-  (navigator.getUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.msGetUserMedia);
+  navigator.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia ||
+  navigator.msGetUserMedia;
 
 // ✅ important
 // Polyfill to support legacy web-api
 export const getUserMedia = (constraints: MediaStreamConstraints): Promise<MediaStream> => {
-  if (!('mediaDevices' in navigator && navigator.mediaDevices.getUserMedia)) {
+  if (!hasGetUserMedia()) {
     if (!getUserMediaFunction) {
       return Promise.reject(
-        new Error('Function getUserMedia of Navigator is not implemented in this browser')
+        new Error('Method getUserMedia of Navigator is not implemented in this browser')
       );
     }
 
