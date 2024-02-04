@@ -9,6 +9,12 @@ interface Navigator {
   msGetUserMedia?: Navigator['getUserMedia'];
 }
 
+interface MediaTrackSource {
+  readonly id: string;
+  readonly kind: string;
+  readonly label: string;
+}
+
 interface Window {
   msRequestAnimationFrame?: Window['requestAnimationFrame'];
   mozRequestAnimationFrame?: Window['requestAnimationFrame'];
@@ -17,5 +23,3 @@ interface Window {
   mozCancelAnimationFrame?: Window['cancelAnimationFrame'];
   webkitCancelAnimationFrame?: Window['cancelAnimationFrame'];
 }
-
-type ImageFormat = 'image/webp' | 'image/png' | 'image/jpeg';

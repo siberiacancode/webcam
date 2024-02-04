@@ -1,29 +1,40 @@
 {
-  "name": "react-webcam-canvas",
-  "description": "React/Webcam/Canvas package",
+  "name": "react-webcam-ultimate",
+  "description": "Ultimate tool for working with media stream and displaying it in your React application",
   "version": "1.0.0",
   "license": "MIT",
   "author": {
-    "name": "Mironychev Michael",
-    "url": "https://github.com/michael-mir"
+    "name": "SIBERIA CAN CODE 🧊",
+    "url": "https://github.com/siberiacancode"
   },
   "contributors": [
     {
       "name": "Mironychev Michael",
       "url": "https://github.com/michael-mir"
+    },
+    {
+      "name": "Dmitry Babin",
+      "url": "https://github.com/debabin"
+    },
+    {
+      "name": "Sergey Kryavkin",
+      "url": "https://github.com/RiceWithMeat"
     }
   ],
   "publishConfig": {
     "access": "public"
   },
+  "homepage": "https://github.com/siberiacancode/react-webcam-ultimate",
   "repository": {
     "type": "git",
-    "url": "https://github.com/michael-mir/webcam-canvas.git"
+    "url": "https://github.com/siberiacancode/react-webcam-ultimate.git"
   },
   "bugs": {
-    "url": "https://github.com/michael-mir/webcam-canvas/issues"
+    "url": "https://github.com/siberiacancode/react-webcam-ultimate/issues"
   },
-  "homepage": "https://github.com/michael-mir/webcam-canvas",
+  "engines": {
+    "node": ">=14"
+  },
   "sideEffects": false,
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -32,11 +43,8 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "shx rm -rf dist && rollup -c --bundleConfigAsCjs",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
     "prepare": "husky install && npm run build",
-    "postversion": "git push && git push --tags",
+    "build": "shx rm -rf dist && rollup -c --bundleConfigAsCjs",
     "lint": "eslint . --ext ts --ext tsx --no-error-on-unmatched-pattern --fix",
     "format": "prettier --write \"**/*.{js,ts,tsx}\"",
     "type": "tsc --noEmit",
@@ -87,6 +95,7 @@
     "video",
     "react",
     "canvas",
+    "camera",
     "webcam",
     "stream",
     "userMedia",
