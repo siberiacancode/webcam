@@ -46,10 +46,10 @@
     "prepare": "husky install && npm run build"
   },
   "devDependencies": {
-    "@siberiacancode/prettier": "^1.0.0",
+    "@siberiacancode/prettier": "^1.0.1",
     "beachball": "^2.39.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "turbo": "^1.11.3"
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "turbo": "^1.12.3"
   }
 }
