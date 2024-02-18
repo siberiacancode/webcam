@@ -1,0 +1,85 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Button, buttonVariants } from '@/components/ui/button';
+---
+
+<Layout title='main' framework='javascript'>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: '/',
+          children: 'Home'
+        },
+        {
+          href: '/javascript',
+          children: 'Javascript'
+        },
+        {
+          children: 'Basic getUserMedia demo'
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
+        <div class='flex flex-col gap-1'>
+          <h1 class='text-3xl font-bold tracking-tight'>Basic getUserMedia demo</h1>
+          <p class='text-gray-500 dark:text-gray-400'>
+            This is a collection of small samples demonstrating various parts of the WebRTC APIs.
+            The code for all samples are available in the GitHub repository.
+          </p>
+          <div class='border-b border-gray-200 dark:border-gray-800 my-4'></div>
+        </div>
+      </div>
+
+      <div class='my-2'>
+        <Button id='button-open-camera'>Open camera</Button>
+        <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}
+          >View source on GitHub</a
+        >
+      </div>
+
+      <video id='camera' autoplay playsinline></video>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { toast } from 'sonner';
+
+  import { getMediaStream } from '@webcam/react';
+
+  const button = document.getElementById('button-open-camera')! as HTMLButtonElement;
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+
+  button.addEventListener('click', async () => {
+    const constraints = {
+      audio: false,
+      video: true
+    };
+
+    try {
+      const stream = await getMediaStream({ constraints });
+      button.disabled = true;
+
+      // @ts-ignore
+      window.stream = stream;
+      video.srcObject = stream;
+
+      const videoTracks = stream.getVideoTracks();
+      console.log('Got stream with constraints:', constraints);
+      toast.success(`Using video device: ${videoTracks[0].label}`);
+    } catch (error: any) {
+      if (error?.name === 'NotAllowedError') {
+        return toast.error(
+          'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+        );
+      }
+
+      toast.error(`getUserMedia error: ${error.name}`, error);
+    }
+  });
+</script>

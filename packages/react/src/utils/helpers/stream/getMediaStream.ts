@@ -5,7 +5,7 @@ import { canGetUserMedia } from './canGetUserMedia';
 import { getUserMedia } from './getUserMedia';
 
 export const getMediaStream = async (
-  params: GetMediaStreamConstraintsParams,
+  params?: GetMediaStreamConstraintsParams,
   timeLimitMs?: number
 ): Promise<MediaStream> => {
   if (!canGetUserMedia()) {

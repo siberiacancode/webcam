@@ -1,12 +1,16 @@
 ---
 import { ModeToggle } from '@/components/ModeToggle';
+import { FrameworkSelect } from '@/components/FrameworkSelect';
+import { Toaster } from '@/components/ui/sonner';
+
 import '@/assets/globals.css';
 
 interface Props {
   title: string;
+  framework: 'javascript' | 'react';
 }
 
-const { title } = Astro.props;
+const { title, framework } = Astro.props;
 ---
 
 <script is:inline>
@@ -38,12 +42,19 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    <div class='container px-4'>
       <div
-        class='container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16'
+        class='flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16'
       >
         <h1 class='text-lg font-semibold'>Playground</h1>
-        <ModeToggle client:load />
+
+        <div class='flex gap-4'>
+          <FrameworkSelect value={framework} client:load />
+          <ModeToggle client:load />
+        </div>
       </div>
       <slot />
+      <Toaster client:load duration={10000} />
+    </div>
   </body>
 </html>

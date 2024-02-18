@@ -1,19 +1,27 @@
 ---
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-
 import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 ---
 
-<Layout title='main' framework='react'>
+<Layout title='main' framework='javascript'>
   <section class='w-full py-12'>
-    <div class='grid gap-6 md:gap-8 px-4 md:px-6 max-w-5xl mx-auto'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: '/',
+          children: 'Home'
+        },
+        {
+          children: 'Javascript'
+        }
+      ]}
+    />
+
+    <div class='grid gap-6 md:gap-8'>
       <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
-        <div class='grid gap-1'>
+        <div class='flex flex-col gap-1'>
           <h1 class='text-3xl font-bold tracking-tight'>Webcam samples</h1>
           <p class='text-gray-500 dark:text-gray-400'>
             This is a collection of small samples demonstrating various parts of the WebRTC APIs.
@@ -25,12 +33,14 @@ import Layout from '@/layouts/Layout.astro';
 
       <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
       <div class='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
-        <Card>
-          <CardHeader>
-            <CardTitle>basic</CardTitle>
-            <CardDescription>basic</CardDescription>
-          </CardHeader>
-        </Card>
+        <a href='/javascript/basic'>
+          <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
+            <CardHeader>
+              <CardTitle>basic</CardTitle>
+              <CardDescription>Basic getUserMedia demo</CardDescription>
+            </CardHeader>
+          </Card>
+        </a>
       </div>
     </div>
   </section>

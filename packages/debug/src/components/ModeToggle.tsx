@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
-export function ModeToggle() {
+export const ModeToggle = () => {
   const [theme, setThemeState] = React.useState<'theme-light' | 'dark' | 'system'>('theme-light');
 
   React.useEffect(() => {
@@ -40,4 +40,4 @@ export function ModeToggle() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
