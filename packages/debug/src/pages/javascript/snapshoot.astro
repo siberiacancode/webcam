@@ -1,0 +1,105 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+---
+
+<script>
+  import { toast } from 'sonner';
+
+  import { getMediaStream, getVideoFrameCanvas } from '@webcam/react';
+
+  const buttonTakeSnapshot = document.getElementById('button-take-snapshot')! as HTMLButtonElement;
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  const snapshot = document.getElementById('snapshot')! as HTMLDivElement;
+
+  const constraints = {
+    audio: false,
+    video: true
+  };
+
+  buttonTakeSnapshot.addEventListener('click', async () => {
+    try {
+      const canvas = await getVideoFrameCanvas(video);
+      if (!canvas) {
+        return toast.error('getVideoFrameCanvas error');
+      }
+      console.log('@', canvas.width)
+      toast.success(`Taked snapshot w: ${canvas.width} h: ${canvas.height} on video device: ${video.innerHTML}`);
+      snapshot.innerHTML = '';
+      snapshot.appendChild(canvas);
+    } catch (error: any) {
+      toast.error(`getVideoFrameCanvas error: ${error.name}`, error);
+    }
+  });
+
+  try {
+    const stream = await getMediaStream({ constraints });
+
+    // @ts-ignore
+    window.stream = stream;
+    video.srcObject = stream;
+
+    const videoTracks = stream.getVideoTracks();
+    console.log('Got stream with constraints:', constraints);
+
+    const [videoDevice] = videoTracks;
+    toast.success(`Using video device: ${videoDevice.label}`);
+
+    const captions = document.createElement('captions')
+    captions.innerHTML = videoDevice.label;
+    video.appendChild(captions);
+
+    buttonTakeSnapshot.disabled = false;
+  } catch (error: any) {
+    if (error?.name === 'NotAllowedError') {
+      toast.error(
+        'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+      );
+    } else toast.error(`getUserMedia error: ${error.name}`, error);
+  }
+</script>
+
+<Layout title='main' framework='javascript'>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: '/',
+          children: 'Home'
+        },
+        {
+          href: '/javascript',
+          children: 'Javascript'
+        },
+        {
+          children: 'Basic getUserMedia demo'
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
+        <div class='flex flex-col gap-1'>
+          <h1 class='text-3xl font-bold tracking-tight'>Basic getUserMedia demo</h1>
+          <p class='text-gray-500 dark:text-gray-400'>
+            Draw a frame from the video onto the canvas element using the drawImage() method.
+          </p>
+          <Separator className='my-4' />
+        </div>
+      </div>
+
+      <div class='my-2'>
+        <Button disabled id='button-take-snapshot'>Take snapshot</Button>
+        <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}
+          >View source on GitHub</a
+        >
+      </div>
+
+      <video id='camera' autoplay playsinline></video>
+      <div id='snapshot'></div>
+    </div>
+  </section>
+</Layout>

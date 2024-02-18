@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 ---
 
 <Layout title='main' framework='javascript'>
@@ -27,17 +28,25 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
             This is a collection of small samples demonstrating various parts of the WebRTC APIs.
             The code for all samples are available in the GitHub repository.
           </p>
-          <div class='border-b border-gray-200 dark:border-gray-800 my-4'></div>
+          <Separator className='my-4' />
         </div>
       </div>
 
       <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
-      <div class='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+      <div class='grid md:grid-cols-2 lg:grid-cols-4 gap-8'>
         <a href='/javascript/basic'>
           <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
             <CardHeader>
               <CardTitle>basic</CardTitle>
               <CardDescription>Basic getUserMedia demo</CardDescription>
+            </CardHeader>
+          </Card>
+        </a>
+        <a href='/javascript/snapshoot'>
+          <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
+            <CardHeader>
+              <CardTitle>snapshoot</CardTitle>
+              <CardDescription>Use getUserMedia with canvas</CardDescription>
             </CardHeader>
           </Card>
         </a>
