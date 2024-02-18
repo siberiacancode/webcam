@@ -1,0 +1,151 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { buttonVariants } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+---
+
+<script>
+  import { toast } from 'sonner';
+
+  import { badgeVariants } from '@/components/ui/badge';
+  import { getMediaStream, stopMediaStream } from '@webcam/react';
+
+  const RESOLUTIONS = {
+    qvga: { width: { exact: 320 }, height: { exact: 240 } },
+    vga: { width: { exact: 640 }, height: { exact: 480 } },
+    hd: { width: { exact: 1280 }, height: { exact: 720 } },
+    fullHd: { width: { exact: 1920 }, height: { exact: 1080 } },
+    televisionFourK: { width: { exact: 3840 }, height: { exact: 2160 } },
+    cinemaFourK: { width: { exact: 4096 }, height: { exact: 2160 } },
+    eightK: { width: { exact: 7680 }, height: { exact: 4320 } }
+  };
+
+  let selectedId: string = 'qvga';
+
+  const startStream = (stream: MediaStream) => {
+    try {
+      // @ts-ignore
+      window.stream = stream;
+      video.srcObject = stream;
+
+      const videoTracks = stream.getVideoTracks();
+
+      const [videoDevice] = videoTracks;
+      console.log('Got stream with constraints:', videoDevice.getConstraints());
+      toast.success(`Using video device: ${videoDevice.label}`);
+
+      const captions = document.createElement('captions');
+      captions.innerHTML = videoDevice.label;
+      video.appendChild(captions);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  let stream = await getMediaStream({ constraints: { video: RESOLUTIONS.qvga } });
+  startStream(stream);
+  document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
+
+  const resolutions = Array.from(document.getElementById('resolution')!.children);
+  resolutions.forEach((resolution) =>
+    resolution.addEventListener('click', async () => {
+      if (selectedId === resolution.id) return;
+
+      const prevResolution = resolutions.find((resolution) => resolution.id === selectedId);
+      if (prevResolution) prevResolution.className = badgeVariants({ variant: 'default' });
+
+      selectedId = resolution.id;
+      resolution.className = badgeVariants({ variant: 'secondary' });
+
+      const videoConstraint = RESOLUTIONS[resolution.id];
+      const constraints = {
+        audio: false,
+        video: videoConstraint
+      };
+
+      try {
+        stream && stopMediaStream(stream);
+        stream = await getMediaStream({ constraints });
+        startStream(stream);
+      } catch (error: any) {
+        const _prevResolution = resolutions.find(
+          (resolution) => resolution.id === prevResolution?.id
+        );
+        if (_prevResolution) {
+          selectedId = _prevResolution.id;
+          _prevResolution.className = badgeVariants({ variant: 'secondary' });
+        }
+        resolution.className = badgeVariants({ variant: 'destructive' });
+
+        if (error?.name === 'OverconstrainedError') {
+          return toast.error(
+            `The resolution ${videoConstraint.width.exact}x${videoConstraint.height.exact} px is not supported by your device.`
+          );
+        }
+
+        if (error?.name === 'NotAllowedError') {
+          return toast.error(
+            'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+          );
+        }
+
+        toast.error(`getUserMedia error: ${error}`, error);
+      }
+    })
+  );
+</script>
+
+<Layout title='main' framework='javascript'>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: '/',
+          children: 'Home'
+        },
+        {
+          href: '/javascript',
+          children: 'Javascript'
+        },
+        {
+          children: 'Basic getUserMedia demo'
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex flex-col gap-1 w-full justify-start'>
+        <div class='flex flex-col md:flex-row'>
+          <h1 class='text-3xl font-bold tracking-tight'>Choose camera resolution</h1>
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            View source on GitHub
+          </a>
+        </div>
+       
+        <p class='text-gray-500 dark:text-gray-400'>
+          Click a button to call getUserMedia() with appropriate resolution.
+        </p>
+    
+        <Separator className='my-4' />
+      </div>
+
+      <div class='my-2'>
+        <div class='flex gap-2 flex-wrap' id='resolution'>
+          <Badge id='qvga'>QVGA</Badge>
+          <Badge id='vga'>VGA</Badge>
+          <Badge id='hd'>HD</Badge>
+          <Badge id='fullHd'>Full</Badge>
+          <Badge id='televisionFourK'>Television 4K (3840x2160)</Badge>
+          <Badge id='cinemaFourK'>Cinema 4K (4096x2160)</Badge>
+          <Badge id='eightK'>8K</Badge>
+        </div>
+      </div>
+
+      <video id='camera' autoplay playsinline />
+    </div>
+  </section>
+</Layout>

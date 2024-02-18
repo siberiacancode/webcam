@@ -23,14 +23,16 @@ import { Separator } from '@/components/ui/separator';
     try {
       const canvas = await getVideoFrameCanvas(video);
       if (!canvas) {
-        return toast.error('getVideoFrameCanvas error');
+        return toast.error('getVideoFrameCanvas canvas error');
       }
-      console.log('@', canvas.width)
-      toast.success(`Taked snapshot w: ${canvas.width} h: ${canvas.height} on video device: ${video.innerHTML}`);
+
+      toast.success(
+        `Taked snapshot w: ${canvas.width} h: ${canvas.height} on video device: ${video.innerHTML}`
+      );
       snapshot.innerHTML = '';
       snapshot.appendChild(canvas);
     } catch (error: any) {
-      toast.error(`getVideoFrameCanvas error: ${error.name}`, error);
+      toast.error(`getVideoFrameCanvas error: ${error}`, error);
     }
   });
 
@@ -46,10 +48,7 @@ import { Separator } from '@/components/ui/separator';
 
     const [videoDevice] = videoTracks;
     toast.success(`Using video device: ${videoDevice.label}`);
-
-    const captions = document.createElement('captions')
-    captions.innerHTML = videoDevice.label;
-    video.appendChild(captions);
+    video.innerHTML = videoDevice.label;
 
     buttonTakeSnapshot.disabled = false;
   } catch (error: any) {
@@ -81,21 +80,23 @@ import { Separator } from '@/components/ui/separator';
     />
 
     <div>
-      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
-        <div class='flex flex-col gap-1'>
-          <h1 class='text-3xl font-bold tracking-tight'>Basic getUserMedia demo</h1>
-          <p class='text-gray-500 dark:text-gray-400'>
-            Draw a frame from the video onto the canvas element using the drawImage() method.
-          </p>
-          <Separator className='my-4' />
+      <div class='flex flex-col gap-1 w-full justify-start'>
+        <div class='flex flex-col md:flex-row'>
+          <h1 class='text-3xl font-bold tracking-tight'>Use getUserMedia with canvas</h1>
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            View source on GitHub
+          </a>
         </div>
+       
+        <p class='text-gray-500 dark:text-gray-400'>
+          Draw a frame from the video onto the canvas element using the drawImage() method.
+        </p>
+    
+        <Separator className='my-4' />
       </div>
 
       <div class='my-2'>
         <Button disabled id='button-take-snapshot'>Take snapshot</Button>
-        <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}
-          >View source on GitHub</a
-        >
       </div>
 
       <video id='camera' autoplay playsinline></video>

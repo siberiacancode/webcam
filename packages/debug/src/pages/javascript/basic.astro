@@ -33,7 +33,7 @@ import { Separator } from '@/components/ui/separator';
       const [videoDevice] = videoTracks;
       toast.success(`Using video device: ${videoDevice.label}`);
 
-      const captions = document.createElement('captions')
+      const captions = document.createElement('captions');
       captions.innerHTML = videoDevice.label;
       video.appendChild(captions);
     } catch (error: any) {
@@ -43,7 +43,7 @@ import { Separator } from '@/components/ui/separator';
         );
       }
 
-      toast.error(`getUserMedia error: ${error.name}`, error);
+      toast.error(`getUserMedia error: ${error}`, error);
     }
   });
 </script>
@@ -68,21 +68,23 @@ import { Separator } from '@/components/ui/separator';
     />
 
     <div>
-      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
-        <div class='flex flex-col gap-1'>
+      <div class='flex flex-col gap-1 w-full justify-start'>
+        <div class='flex flex-col md:flex-row'>
           <h1 class='text-3xl font-bold tracking-tight'>Basic getUserMedia demo</h1>
-          <p class='text-gray-500 dark:text-gray-400'>
-            Display the video stream from getUserMedia() in a video element.
-          </p>
-          <Separator className='my-4' />
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            View source on GitHub
+          </a>
         </div>
+       
+        <p class='text-gray-500 dark:text-gray-400'>
+          Display the video stream from getUserMedia() in a video element.
+        </p>
+    
+        <Separator className='my-4' />
       </div>
 
       <div class='my-2'>
         <Button id='button-open-camera'>Open camera</Button>
-        <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}
-          >View source on GitHub</a
-        >
       </div>
 
       <video id='camera' autoplay playsinline></video>
