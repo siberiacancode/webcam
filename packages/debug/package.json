@@ -12,6 +12,13 @@
     "type": "tsc --noEmit",
     "pretty": "yarn type && yarn format && yarn lint"
   },
+  "lint-staged": {
+    "*.js": "prettier --write",
+    "*.{ts,tsx,astro}": [
+      "prettier --write",
+      "eslint --no-error-on-unmatched-pattern --fix"
+    ]
+  },
   "dependencies": {
     "@astrojs/check": "^0.5.4",
     "@astrojs/react": "^3.0.10",
