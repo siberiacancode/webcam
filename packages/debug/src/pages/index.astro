@@ -1,31 +1,45 @@
 ---
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Image } from 'astro:assets';
 
 import Layout from '@/layouts/Layout.astro';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+
+import react from "../assets/images/react-original.svg";
+import javascript from "../assets/images/javascript-original.svg";
 ---
 
-<Layout title='main' framework='react'>
+<Layout title='main' framework='javascript'>
   <section class='w-full py-12'>
-    <div class='grid gap-6 md:gap-8 px-4 md:px-6 max-w-5xl mx-auto'>
-      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
-        <div class='grid gap-1'>
+    <div class='grid gap-6 md:gap-8'>
+      <div class='flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-8'>
+        <div class='flex flex-col gap-1'>
           <h1 class='text-3xl font-bold tracking-tight'>Webcam samples</h1>
           <p class='text-gray-500 dark:text-gray-400'>
             This is a collection of small samples demonstrating various parts of the WebRTC APIs.
             The code for all samples are available in the GitHub repository.
           </p>
-          <div class='border-b border-gray-200 dark:border-gray-800 my-4'></div>
+          <Separator className='my-4' />
         </div>
       </div>
 
-      <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
-      <div class='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
-        <Card>
-          <CardHeader>
-            <CardTitle>basic</CardTitle>
-            <CardDescription>basic</CardDescription>
-          </CardHeader>
-        </Card>
+      <div class='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
+        <a href='/javascript'>
+          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+            <CardHeader className="flex flex-row gap-3 items-center">
+              <Image src={javascript} class='rounded' alt="javascript" width="40" height="40" />
+              <CardTitle>javascript</CardTitle>
+            </CardHeader>
+          </Card>
+        </a>
+        <a href='/react'>
+          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+            <CardHeader className="flex flex-row gap-3 items-center">
+              <Image src={react} alt="react" width="40" height="40" />
+              <CardTitle>react</CardTitle>
+            </CardHeader>
+          </Card>
+        </a>
       </div>
     </div>
   </section>

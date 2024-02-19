@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
   import { toast } from 'sonner';
 
   import { badgeVariants } from '@/components/ui/badge';
-  import { getMediaStream, stopMediaStream } from '@webcam/react';
+  import { getMediaStream, stopMediaStream, applyMediaStreamConstraints } from '@webcam/react';
 
   const RESOLUTIONS = {
     qvga: { width: { exact: 320 }, height: { exact: 240 } },
@@ -24,6 +24,16 @@ import { Separator } from '@/components/ui/separator';
 
   let selectedId: string = 'qvga';
 
+  const checkboxLockAspectRatio = document.getElementById(
+    'checkbox-lock-aspect-ratio'
+  )! as HTMLInputElement;
+  const inputRangeResolution = document.getElementById(
+    'input-range-resolution'
+  )! as HTMLInputElement;
+  const inputRangeResolutionLabel = document.getElementById(
+    'input-range-resolution-label'
+  )! as HTMLSpanElement;
+
   const startStream = (stream: MediaStream) => {
     try {
       // @ts-ignore
@@ -33,7 +43,7 @@ import { Separator } from '@/components/ui/separator';
       const videoTracks = stream.getVideoTracks();
 
       const [videoDevice] = videoTracks;
-      console.log('Got stream with constraints:', videoDevice.getConstraints());
+      console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
       toast.success(`Using video device: ${videoDevice.label}`);
 
       const captions = document.createElement('captions');
@@ -43,6 +53,44 @@ import { Separator } from '@/components/ui/separator';
       throw new Error(error);
     }
   };
+
+  checkboxLockAspectRatio.addEventListener('change', async () => {
+    try {
+      let videoConstraint;
+      if (checkboxLockAspectRatio.checked) {
+        videoConstraint = {
+          width: { exact: +inputRangeResolution.value },
+          aspectRatio: {
+            exact: video.videoWidth / video.videoHeight
+          }
+        };
+        toast.success(`Apply constraint success aspectRatio: ${videoConstraint.aspectRatio.exact}`);
+      } else {
+        videoConstraint = { width: { exact: +inputRangeResolution.value } };
+        toast.success(`Apply constraint success w: ${+inputRangeResolution.value}`);
+      }
+      console.log('Apply constraints for stream:', videoConstraint);
+      await applyMediaStreamConstraints(stream, { video: videoConstraint });
+    } catch (error: any) {
+      toast.error(`applyMediaStreamConstraints error: ${error}`, error);
+    }
+  });
+
+  inputRangeResolution.addEventListener('mouseup', async (event: any) => {
+    try {
+      const width = event.target.value;
+      const videoConstraint = { width: { exact: +width } };
+      await applyMediaStreamConstraints(stream, { video: videoConstraint });
+      inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+        /\d+/g,
+        `${width}`
+      );
+      console.log('Apply constraints for stream:', videoConstraint);
+      toast.success(`Apply constraint success w: ${width}`);
+    } catch (error: any) {
+      toast.error(`applyMediaStreamConstraints error: ${error}`, error);
+    }
+  });
 
   const video = document.getElementById('camera')! as HTMLVideoElement;
   let stream = await getMediaStream({ constraints: { video: RESOLUTIONS.qvga } });
@@ -60,7 +108,14 @@ import { Separator } from '@/components/ui/separator';
       selectedId = resolution.id;
       resolution.className = badgeVariants({ variant: 'secondary' });
 
-      const videoConstraint = RESOLUTIONS[resolution.id];
+      const videoConstraint = RESOLUTIONS[resolution.id as keyof typeof RESOLUTIONS];
+      const width = videoConstraint.width.exact.toString();
+      inputRangeResolution.value = width;
+      inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+        /\d+/g,
+        width
+      );
+
       const constraints = {
         audio: false,
         video: videoConstraint
@@ -77,6 +132,13 @@ import { Separator } from '@/components/ui/separator';
         if (_prevResolution) {
           selectedId = _prevResolution.id;
           _prevResolution.className = badgeVariants({ variant: 'secondary' });
+          const prevVideoConstraint = RESOLUTIONS[_prevResolution.id as keyof typeof RESOLUTIONS];
+          const width = prevVideoConstraint.width.exact.toString();
+          inputRangeResolution.value = width;
+          inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+            /\d+/g,
+            width
+          );
         }
         resolution.className = badgeVariants({ variant: 'destructive' });
 
@@ -112,29 +174,29 @@ import { Separator } from '@/components/ui/separator';
           children: 'Javascript'
         },
         {
-          children: 'Basic getUserMedia demo'
+          children: 'Choose camera resolution'
         }
       ]}
     />
 
     <div>
-      <div class='flex flex-col gap-1 w-full justify-start'>
+      <div class='flex w-full flex-col justify-start gap-1'>
         <div class='flex flex-col md:flex-row'>
           <h1 class='text-3xl font-bold tracking-tight'>Choose camera resolution</h1>
           <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
             View source on GitHub
           </a>
         </div>
-       
+
         <p class='text-gray-500 dark:text-gray-400'>
           Click a button to call getUserMedia() with appropriate resolution.
         </p>
-    
+
         <Separator className='my-4' />
       </div>
 
       <div class='my-2'>
-        <div class='flex gap-2 flex-wrap' id='resolution'>
+        <div class='flex flex-wrap gap-2' id='resolution'>
           <Badge id='qvga'>QVGA</Badge>
           <Badge id='vga'>VGA</Badge>
           <Badge id='hd'>HD</Badge>
@@ -144,8 +206,28 @@ import { Separator } from '@/components/ui/separator';
           <Badge id='eightK'>8K</Badge>
         </div>
       </div>
-
-      <video id='camera' autoplay playsinline />
+      <div class='my-4 flex flex-col gap-2'>
+        <div>
+          <span id='input-range-resolution-label' class='text-gray-500 dark:text-gray-400'>
+            width 320px
+          </span>
+        </div>
+        <input id='input-range-resolution' type='range' min='0' max='7680' value='320' />
+        <div class='flex items-center'>
+          <input
+            id='checkbox-lock-aspect-ratio'
+            type='checkbox'
+            value=''
+            class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
+          />
+          <label
+            for='link-checkbox'
+            class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+            >lock aspect ratio</label
+          >
+        </div>
+      </div>
+      <video id='camera' autoplay playsinline></video>
     </div>
   </section>
 </Layout>

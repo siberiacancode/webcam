@@ -3,6 +3,7 @@ import { ModeToggle } from '@/components/ModeToggle';
 import { FrameworkSelect } from '@/components/FrameworkSelect';
 import { Toaster } from '@/components/ui/sonner';
 
+
 import '@/assets/globals.css';
 
 interface Props {
@@ -42,19 +43,39 @@ const { title, framework } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <div class='container px-4'>
-      <div
-        class='flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16'
-      >
-        <h1 class='text-lg font-semibold'>Playground</h1>
-
-        <div class='flex gap-4'>
-          <FrameworkSelect value={framework} client:load />
-          <ModeToggle client:load />
-        </div>
+    <div class='container flex h-screen flex-col justify-between px-4'>
+      <div>
+        <header
+          class='flex justify-between space-y-2 py-4 items-center sm:space-y-0 md:h-16'
+        >
+          <h1 class='text-lg font-semibold'>Playground</h1>
+          <div class='flex gap-4'>
+            <FrameworkSelect value={framework} client:load />
+            <ModeToggle client:load />
+          </div>
+        </header>
+        <slot />
+        <Toaster client:load duration={10000} />
       </div>
-      <slot />
-      <Toaster client:load duration={10000} />
+      <footer class='flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row'>
+        <p
+          class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
+        >
+          Built by
+          <a
+            href='#'
+            target='_blank'
+            rel='noreferrer'
+            class='font-medium underline underline-offset-4'>siberiacancode</a
+          >. The source code is available on
+          <a
+            href='#'
+            target='_blank'
+            rel='noreferrer'
+            class='font-medium underline underline-offset-4'>GitHub</a
+          >.
+        </p>
+      </footer>
     </div>
   </body>
 </html>

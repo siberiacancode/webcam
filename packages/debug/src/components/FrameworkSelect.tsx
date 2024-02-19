@@ -4,20 +4,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Sun } from 'lucide-react';
+
 import { Button } from './ui/button';
+import react from "../assets/images/react-original.svg";
+import javascript from "@/assets/images/javascript-original.svg";
 
 const FRAMEWORKS = {
   javascript: {
-    icon: (
-      <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-    ),
+    icon: <img src={javascript.src} className='rounded' alt="javascript" width="20" height="20" />,
     name: 'javascript'
   },
   react: {
-    icon: (
-      <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-    ),
+    icon: <img src={react.src} alt="react" width="20" height="20" />,
     name: 'react'
   }
 };
@@ -29,7 +27,7 @@ interface FrameworkSelectProps {
 export const FrameworkSelect = ({ value }: FrameworkSelectProps) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant='outline' className='w-32 flex justify-center gap-2'>
+      <Button variant='outline' className='flex w-32 justify-center gap-2'>
         {FRAMEWORKS[value].icon}
         <span>{FRAMEWORKS[value].name}</span>
       </Button>

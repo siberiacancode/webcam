@@ -21,7 +21,7 @@ import { Separator } from '@/components/ui/separator';
     />
 
     <div class='grid gap-6 md:gap-8'>
-      <div class='flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8'>
+      <div class='flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-8'>
         <div class='flex flex-col gap-1'>
           <h1 class='text-3xl font-bold tracking-tight'>Webcam samples</h1>
           <p class='text-gray-500 dark:text-gray-400'>
@@ -33,9 +33,9 @@ import { Separator } from '@/components/ui/separator';
       </div>
 
       <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
-      <div class='grid md:grid-cols-2 lg:grid-cols-4 gap-8'>
+      <div class='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
         <a href='/javascript/basic'>
-          <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
+          <Card className='transition-transform duration-150 hover:translate-y-[-5px]'>
             <CardHeader>
               <CardTitle>basic</CardTitle>
               <CardDescription>Basic getUserMedia demo</CardDescription>
@@ -43,7 +43,7 @@ import { Separator } from '@/components/ui/separator';
           </Card>
         </a>
         <a href='/javascript/snapshoot'>
-          <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
+          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
             <CardHeader>
               <CardTitle>snapshoot</CardTitle>
               <CardDescription>Use getUserMedia with canvas</CardDescription>
@@ -51,7 +51,7 @@ import { Separator } from '@/components/ui/separator';
           </Card>
         </a>
         <a href='/javascript/select-resolution'>
-          <Card className='hover:translate-y-[-5px] transition-transform duration-150'>
+          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
             <CardHeader>
               <CardTitle>select resolution</CardTitle>
               <CardDescription>Choose camera resolution</CardDescription>

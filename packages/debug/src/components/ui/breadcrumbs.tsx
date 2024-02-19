@@ -21,7 +21,7 @@ BreadcrumbItem.displayName = 'BreadcrumbItem';
 
 const Breadcrumbs = React.forwardRef<HTMLUListElement, React.ComponentProps<'ul'>>(
   ({ className, children, ...props }, ref) => (
-    <ul ref={ref} className={cn('flex items-center pb-4 lgx:p-3', className)} {...props}>
+    <ul ref={ref} className={cn('lgx:p-3 flex items-center pb-4', className)} {...props}>
       {React.Children.map(children, (child, index) => (
         <li className='flex'>
           {child}
