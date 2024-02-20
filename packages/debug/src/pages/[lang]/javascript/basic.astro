@@ -1,8 +1,33 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
 import Layout from '@/layouts/Layout.astro';
 import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: CollectionEntry<'javascript~basic'>;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~basic');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
 ---
 
 <script>
@@ -48,21 +73,29 @@ import { Separator } from '@/components/ui/separator';
   });
 </script>
 
-<Layout title='main' framework='javascript'>
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/basic')
+  }}
+>
   <section class='w-full py-12'>
     <Breadcrumbs
       client:load
       items={[
         {
-          href: '/',
-          children: 'Home'
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
         },
         {
-          href: '/javascript',
-          children: 'Javascript'
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
         },
         {
-          children: 'Basic getUserMedia demo'
+          children: translation.data['breadcrumbs.basic']
         }
       ]}
     />
@@ -70,21 +103,21 @@ import { Separator } from '@/components/ui/separator';
     <div>
       <div class='flex w-full flex-col justify-start gap-1'>
         <div class='flex flex-col md:flex-row'>
-          <h1 class='text-3xl font-bold tracking-tight'>Basic getUserMedia demo</h1>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
           <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
-            View source on GitHub
+            {translation.data['link.viewSource']}
           </a>
         </div>
 
         <p class='text-gray-500 dark:text-gray-400'>
-          Display the video stream from getUserMedia() in a video element.
+          {translation.data.description}
         </p>
 
         <Separator className='my-4' />
       </div>
 
       <div class='my-2'>
-        <Button id='button-open-camera'>Open camera</Button>
+        <Button id='button-open-camera'>{translation.data['button.openCamera']}</Button>
       </div>
 
       <video id='camera' autoplay playsinline></video>

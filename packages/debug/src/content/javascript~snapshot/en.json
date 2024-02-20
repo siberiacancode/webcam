@@ -1,0 +1,11 @@
+{
+  "title": "Use getUserMedia with canvas",
+  "description": "Draw a frame from the video onto the canvas element using the drawImage() method.",
+
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.snapshot": "Use getUserMedia with canvas",
+
+  "button.takeSnapshot": "Take snapshot",
+  "link.viewSource": "View source on GitHub"
+}

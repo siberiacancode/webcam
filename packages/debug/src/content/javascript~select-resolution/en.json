@@ -1,0 +1,12 @@
+{
+  "title": "Choose camera resolution",
+  "description": "Click a button to call getUserMedia() with appropriate resolution.",
+
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.selectResolution": "Choose camera resolution",
+
+  "slider.width.label": "width",
+  "checkbox.lockAspectRatio.label": "lock aspect ratio",
+  "link.viewSource": "View source on GitHub"
+}

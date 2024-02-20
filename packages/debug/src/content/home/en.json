@@ -1,0 +1,11 @@
+{
+  "title": "Basic getUserMedia demo",
+  "description": "Display the video stream from getUserMedia() in a video element.",
+
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.basic": "Basic getUserMedia demo",
+
+  "button.openCamera": "Open camera",
+  "link.viewSource": "View source on GitHub"
+}

@@ -1,9 +1,33 @@
 ---
+import { getCollection } from 'astro:content';
+
 import Layout from '@/layouts/Layout.astro';
 import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: any;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~select-resolution');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
 ---
 
 <script>
@@ -80,11 +104,11 @@ import { Separator } from '@/components/ui/separator';
     try {
       const width = event.target.value;
       const videoConstraint = { width: { exact: +width } };
-      await applyMediaStreamConstraints(stream, { video: videoConstraint });
       inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
         /\d+/g,
         `${width}`
       );
+      await applyMediaStreamConstraints(stream, { video: videoConstraint });
       console.log('Apply constraints for stream:', videoConstraint);
       toast.success(`Apply constraint success w: ${width}`);
     } catch (error: any) {
@@ -160,21 +184,29 @@ import { Separator } from '@/components/ui/separator';
   );
 </script>
 
-<Layout title='main' framework='javascript'>
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/select-resolution')
+  }}
+>
   <section class='w-full py-12'>
     <Breadcrumbs
       client:load
       items={[
         {
-          href: '/',
-          children: 'Home'
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
         },
         {
-          href: '/javascript',
-          children: 'Javascript'
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
         },
         {
-          children: 'Choose camera resolution'
+          children: translation.data['breadcrumbs.selectResolution']
         }
       ]}
     />
@@ -182,14 +214,14 @@ import { Separator } from '@/components/ui/separator';
     <div>
       <div class='flex w-full flex-col justify-start gap-1'>
         <div class='flex flex-col md:flex-row'>
-          <h1 class='text-3xl font-bold tracking-tight'>Choose camera resolution</h1>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
           <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
-            View source on GitHub
+            {translation.data['link.viewSource']}
           </a>
         </div>
 
         <p class='text-gray-500 dark:text-gray-400'>
-          Click a button to call getUserMedia() with appropriate resolution.
+          {translation.data.description}
         </p>
 
         <Separator className='my-4' />
@@ -209,7 +241,7 @@ import { Separator } from '@/components/ui/separator';
       <div class='my-4 flex flex-col gap-2'>
         <div>
           <span id='input-range-resolution-label' class='text-gray-500 dark:text-gray-400'>
-            width 320px
+            {translation.data['slider.width.label']} 320px
           </span>
         </div>
         <input id='input-range-resolution' type='range' min='0' max='7680' value='320' />
@@ -217,14 +249,14 @@ import { Separator } from '@/components/ui/separator';
           <input
             id='checkbox-lock-aspect-ratio'
             type='checkbox'
-            value=''
             class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
           />
           <label
             for='link-checkbox'
             class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-            >lock aspect ratio</label
           >
+            {translation.data['checkbox.lockAspectRatio.label']}
+          </label>
         </div>
       </div>
       <video id='camera' autoplay playsinline></video>

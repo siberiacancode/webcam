@@ -1,0 +1,4 @@
+{
+  "title": "Basic getUserMedia demo",
+  "description": "This is a collection of small samples demonstrating various parts of the WebRTC APIs. The code for all samples are available in the <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a> repository."
+}

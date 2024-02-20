@@ -1,17 +1,51 @@
 ---
+import { getCollection } from 'astro:content';
+import type { HTMLAttributes } from 'astro/types';
+
 import { ModeToggle } from '@/components/ModeToggle';
 import { FrameworkSelect } from '@/components/FrameworkSelect';
+import { LanguageSelect } from '@/components/LanguageSelect';
 import { Toaster } from '@/components/ui/sonner';
-
 
 import '@/assets/globals.css';
 
 interface Props {
   title: string;
+  description: string;
   framework: 'javascript' | 'react';
+  language: 'ru' | 'en';
+  seo?: {
+    keywords?: string[];
+    canonical?: string[];
+    charset?: string;
+    languageAlternates?: { href: string; hreflang: string }[];
+    meta?: Partial<HTMLAttributes<'meta'>>[];
+  };
 }
 
-const { title, framework } = Astro.props;
+const defaultSeo = {
+  keywords: [
+    'media',
+    'video',
+    'react',
+    'canvas',
+    'camera',
+    'webcam',
+    'stream',
+    'userMedia',
+    'navigator',
+    'screenshot',
+    'constraints',
+    'getUserMedia',
+    'react-webcam',
+    'webcam-canvas'
+  ],
+  charset: 'UTF-8'
+};
+const { framework, language, seo, title, description } = Astro.props;
+
+const layoutCollection = await getCollection('layout');
+const translations = layoutCollection.find((translation) => translation.id === language);
 ---
 
 <script is:inline>
@@ -33,24 +67,52 @@ const { title, framework } = Astro.props;
   }
 </script>
 
-<html lang='en'>
+<html lang={language}>
   <head>
-    <meta charset='UTF-8' />
-    <meta name='description' content='Astro description' />
+    <meta charset={seo?.charset ?? defaultSeo.charset} />
+    <title set:html={title} />
+    <meta name='description' content={description} />
     <meta name='viewport' content='width=device-width' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='generator' content={Astro.generator} />
-    <title>{title}</title>
+    <meta name='keywords' content={seo?.keywords?.join(', ') ?? defaultSeo.keywords?.join(', ')} />
+    {seo?.meta?.map((attributes) => <meta {...attributes} />)}
+    {
+      seo?.languageAlternates?.map((alternate) => (
+        <link rel='alternate' hreflang={alternate.hreflang} href={alternate.href} />
+      ))
+    }
+    <meta
+      property='og:image'
+      content='https://opengraph.githubassets.com/897dd391ad26f4fcc8ee1e4060713fe782fef80dff3427307adc705de645e229/siberiacancode/react-webcam-ultimate'
+    />
+    <meta
+      property='og:image:alt'
+      content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+    />
+    <meta property='og:image:width' content='1200' /><meta
+      property='og:image:height'
+      content='600'
+    />
+    <meta property='og:site_name' content='GitHub' /><meta property='og:type' content='object' />
+    <meta
+      property='og:title'
+      content='siberiacancode/react-webcam-ultimate: 📸 ultimate tool for working with media stream and displaying it in your react application'
+    />
+    <meta property='og:url' content='https://github.com/siberiacancode/react-webcam-ultimate' />
+    <meta
+      property='og:description'
+      content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+    />
   </head>
   <body>
     <div class='container flex h-screen flex-col justify-between px-4'>
       <div>
-        <header
-          class='flex justify-between space-y-2 py-4 items-center sm:space-y-0 md:h-16'
-        >
+        <header class='flex items-center justify-between space-y-2 py-4 sm:space-y-0 md:h-16'>
           <h1 class='text-lg font-semibold'>Playground</h1>
           <div class='flex gap-4'>
             <FrameworkSelect value={framework} client:load />
+            <LanguageSelect value={language} client:load />
             <ModeToggle client:load />
           </div>
         </header>
@@ -61,19 +123,8 @@ const { title, framework } = Astro.props;
         <p
           class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
         >
-          Built by
-          <a
-            href='#'
-            target='_blank'
-            rel='noreferrer'
-            class='font-medium underline underline-offset-4'>siberiacancode</a
-          >. The source code is available on
-          <a
-            href='#'
-            target='_blank'
-            rel='noreferrer'
-            class='font-medium underline underline-offset-4'>GitHub</a
-          >.
+          <span set:html={translations.data['link.builtBy']} />
+          <span set:html={translations.data['link.sourceCode']} />
         </p>
       </footer>
     </div>

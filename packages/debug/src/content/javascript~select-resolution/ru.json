@@ -1,0 +1,12 @@
+{
+  "title": "Выбор разрешение камеры",
+  "description": "Нажмите на кнопку, чтобы вызвать getUserMedia() с соответствующим разрешением.",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.selectResolution": "Выбор разрешение камеры",
+
+  "slider.width.label": "ширина",
+  "checkbox.lockAspectRatio.label": "заблокировать соотношение сторон",
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}

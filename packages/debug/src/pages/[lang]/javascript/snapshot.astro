@@ -1,8 +1,32 @@
 ---
+import { getCollection } from 'astro:content';
+
 import Layout from '@/layouts/Layout.astro';
 import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: any;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~snapshot');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
 ---
 
 <script>
@@ -60,21 +84,29 @@ import { Separator } from '@/components/ui/separator';
   }
 </script>
 
-<Layout title='main' framework='javascript'>
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/select-snapshot')
+  }}
+>
   <section class='w-full py-12'>
     <Breadcrumbs
       client:load
       items={[
         {
-          href: '/',
-          children: 'Home'
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
         },
         {
-          href: '/javascript',
-          children: 'Javascript'
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
         },
         {
-          children: 'Use getUserMedia with canvas'
+          children: translation.data['breadcrumbs.snapshot']
         }
       ]}
     />
@@ -82,21 +114,23 @@ import { Separator } from '@/components/ui/separator';
     <div>
       <div class='flex w-full flex-col justify-start gap-1'>
         <div class='flex flex-col md:flex-row'>
-          <h1 class='text-3xl font-bold tracking-tight'>Use getUserMedia with canvas</h1>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
           <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
-            View source on GitHub
+            {translation.data['link.viewSource']}
           </a>
         </div>
 
         <p class='text-gray-500 dark:text-gray-400'>
-          Draw a frame from the video onto the canvas element using the drawImage() method.
+          {translation.data.description}
         </p>
 
         <Separator className='my-4' />
       </div>
 
       <div class='my-2'>
-        <Button disabled id='button-take-snapshot'>Take snapshot</Button>
+        <Button disabled id='button-take-snapshot'>
+          {translation.data['button.takeSnapshot']}
+        </Button>
       </div>
 
       <video id='camera' autoplay playsinline></video>

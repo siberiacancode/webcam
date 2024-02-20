@@ -45,6 +45,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@astrojs/ts-plugin": "^1.5.2",
     "@siberiacancode/eslint": "^1.1.0",
     "@siberiacancode/prettier": "^1.1.0",
     "prettier-plugin-astro": "^0.13.0",
