@@ -3,10 +3,11 @@ import { hasGetUserMedia } from './hasGetUserMedia';
 // ✅ important
 // Implementations for each browser need to be supported
 export const getUserMediaFunction =
-  navigator.getUserMedia ||
-  navigator.webkitGetUserMedia ||
-  navigator.mozGetUserMedia ||
-  navigator.msGetUserMedia;
+  typeof window !== 'undefined' &&
+  (navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia);
 
 // ✅ important
 // Polyfill to support legacy web-api

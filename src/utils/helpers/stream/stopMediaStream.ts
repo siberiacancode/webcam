@@ -1,4 +1,6 @@
-export const stopMediaStream = (stream: MediaStreamTrack | MediaStream) => {
+export const stopMediaStream = (stream?: MediaStreamTrack | MediaStream) => {
+  if (!stream) return;
+
   if (stream instanceof MediaStreamTrack) {
     stream.stop();
     return;
