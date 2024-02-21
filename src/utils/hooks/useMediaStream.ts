@@ -95,7 +95,6 @@ export const useMediaStream = ({
 
     return () => {
       handlerRef.current.stop?.(runningStream);
-      if (!runningStream) return;
       stopMediaStream(runningStream);
     };
   }, [

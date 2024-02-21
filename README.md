@@ -61,8 +61,8 @@ The component also supports many properties for more specific work:
 | mainCamera                | boolean  | false        | should use a main camera (requires Navigator.mediaDevices.enumerateDevices)             |
 | frontCamera               | boolean  | false        | should use a front camera (MediaTrackConstraints['facingFront'] === 'user')             |
 | applyConstraints          | boolean  | false        | should new constraints be applied to the media stream                                   |
-| cameraResolutionType      | string   |              | video track resolution size - 'UHD' | 'QHD' | 'FHD' | 'HD'                              |
-| cameraResolutionMode      | string   | 'ideal'      | video track resolution mode - 'min' | 'max' | 'ideal' | 'exact'                         |
+| cameraResolutionType      | string   |              | video track resolution size - `('UHD' \| 'QHD' \| 'FHD' \| 'HD')`                       |
+| cameraResolutionMode      | string   | 'ideal'      | video track resolution mode - `('min' \| 'max' \| 'ideal' \| 'exact')`                  |
 | audioConstraints          | object   |              | audio track constraints - MediaStreamConstraints['audio']                               |
 | videoConstraints          | object   |              | video track constraints - MediaStreamConstraints['video']                               |
 | requestTimeLimit          | number   |              | limiting the media stream request by time                                               |
