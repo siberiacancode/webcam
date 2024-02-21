@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
-import Layout from '@/layouts/Layout.astro';
+import HomeLayout from '@/layouts/HomeLayout.astro';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -19,7 +19,7 @@ export const getStaticPaths = async () => {
   const paths = translations.map((translation) => ({
     params: {
       lang: translation.id,
-      slug: `/${translation.id}/${translation.collection.replaceAll('-', '/')}`
+      slug: `/${translation.id}`
     },
     props: { translation }
   }));
@@ -30,38 +30,44 @@ export const getStaticPaths = async () => {
 const { translation } = Astro.props;
 ---
 
-<Layout title='Webcam samples' framework='javascript' language={translation.id}>
-  <section class='w-full py-12'>
+<HomeLayout
+  title={translation.data.title}
+  description={translation.data.description}
+  language={translation.id}
+>
+  <div class='mx-auto w-3/5 py-12'>
     <div class='grid gap-6 md:gap-8'>
-      <div class='flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-8'>
-        <div class='flex flex-col gap-1'>
-          <h1 class='text-3xl font-bold tracking-tight'>Webcam samples</h1>
-          <p class='text-gray-500 dark:text-gray-400'>
-            This is a collection of small samples demonstrating various parts of the WebRTC APIs.
-            The code for all samples are available in the GitHub repository.
-          </p>
-          <Separator className='my-4' />
-        </div>
+      <div class='flex flex-col items-center justify-center gap-2'>
+        <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+        <p
+          set:html={translation.data.description}
+          class='text-center text-gray-500 dark:text-gray-400'
+        />
+        <Separator className='my-4' />
       </div>
 
-      <div class='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
-        <a href='/javascript'>
-          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-            <CardHeader className='flex flex-row items-center gap-3'>
-              <Image src={javascript} class='rounded' alt='javascript' width='40' height='40' />
-              <CardTitle>javascript</CardTitle>
-            </CardHeader>
-          </Card>
-        </a>
-        <a href='/react'>
-          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-            <CardHeader className='flex flex-row items-center gap-3'>
-              <Image src={react} alt='react' width='40' height='40' />
-              <CardTitle>react</CardTitle>
-            </CardHeader>
-          </Card>
-        </a>
+      <div class='ite mx-auto flex flex-col justify-center gap-4'>
+        <sections>
+          <a href={`/${translation.id}/javascript`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row items-center gap-3'>
+                <Image src={javascript} class='rounded' alt='javascript' width='40' height='40' />
+                <CardTitle>javascript</CardTitle>
+              </CardHeader>
+            </Card>
+          </a>
+        </sections>
+        <sections>
+          <a href={`/${translation.id}/react`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row items-center gap-3'>
+                <Image src={react} alt='react' width='40' height='40' />
+                <CardTitle>react</CardTitle>
+              </CardHeader>
+            </Card>
+          </a>
+        </sections>
       </div>
     </div>
-  </section>
-</Layout>
+  </div>
+</HomeLayout>

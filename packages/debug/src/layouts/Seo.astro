@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props {
+  title: string;
+  description: string;
+  seo?: {
+    keywords?: string[];
+    canonical?: string[];
+    charset?: string;
+    languageAlternates?: { href: string; hreflang: string }[];
+    meta?: Partial<HTMLAttributes<'meta'>>[];
+  };
+}
+
+const defaultSeo = {
+  keywords: [
+    'media',
+    'video',
+    'react',
+    'canvas',
+    'camera',
+    'webcam',
+    'stream',
+    'userMedia',
+    'navigator',
+    'screenshot',
+    'constraints',
+    'getUserMedia',
+    'react-webcam',
+    'webcam-canvas'
+  ],
+  charset: 'UTF-8'
+};
+const { seo, title, description } = Astro.props;
+---
+
+<meta charset={seo?.charset ?? defaultSeo.charset} />
+<title set:html={title} />
+<meta name='description' content={description} />
+<meta name='viewport' content='width=device-width' />
+<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+<meta name='generator' content={Astro.generator} />
+<meta name='keywords' content={seo?.keywords?.join(', ') ?? defaultSeo.keywords?.join(', ')} />
+{seo?.meta?.map((attributes) => <meta {...attributes} />)}
+{
+  seo?.languageAlternates?.map((alternate) => (
+    <link rel='alternate' hreflang={alternate.hreflang} href={alternate.href} />
+  ))
+}
+<meta
+  property='og:image'
+  content='https://opengraph.githubassets.com/897dd391ad26f4fcc8ee1e4060713fe782fef80dff3427307adc705de645e229/siberiacancode/react-webcam-ultimate'
+/>
+<meta
+  property='og:image:alt'
+  content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+/>
+<meta property='og:image:width' content='1200' /><meta property='og:image:height' content='600' />
+<meta property='og:site_name' content='GitHub' /><meta property='og:type' content='object' />
+<meta
+  property='og:title'
+  content='siberiacancode/react-webcam-ultimate: 📸 ultimate tool for working with media stream and displaying it in your react application'
+/>
+<meta property='og:url' content='https://github.com/siberiacancode/react-webcam-ultimate' />
+<meta
+  property='og:description'
+  content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+/>

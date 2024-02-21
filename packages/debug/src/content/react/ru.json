@@ -1,4 +1,13 @@
 {
   "title": "React шаблоны webcam",
-  "description": "Это коллекция небольших примеров, демонстрирующих различные части API WebRTC. Код всех примеров доступен в репозитории <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a>."
+  "description": "📸 Это коллекция небольших примеров, демонстрирующих различные части пакета webcam. Код всех примеров доступен в репозитории <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a>.",
+
+  "card.basic.title": "basic",
+  "card.basic.description": "Basic getUserMedia demo",
+
+  "card.snapshot.title": "snapshot",
+  "card.snapshot.description": "Use getUserMedia with canvas",
+
+  "card.selectResolution.title": "select resolution",
+  "card.selectResolution.description": "Choose camera resolution"
 }

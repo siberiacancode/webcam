@@ -1,11 +1,4 @@
 {
-  "title": "Basic getUserMedia demo",
-  "description": "Display the video stream from getUserMedia() in a video element.",
-
-  "breadcrumbs.home": "Home",
-  "breadcrumbs.javascript": "Javascript",
-  "breadcrumbs.basic": "Basic getUserMedia demo",
-
-  "button.openCamera": "Open camera",
-  "link.viewSource": "View source on GitHub"
+  "title": "Webcam 📸 samples",
+  "description": "This is a collection of small samples demonstrating various parts of the webcam package. The code for all samples are available in the <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a> repository."
 }

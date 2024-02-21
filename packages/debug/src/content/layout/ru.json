@@ -1,4 +1,6 @@
 {
+  "title": "Песочница",
+
   "link.builtBy": "Автор <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>siberiacancode</a>",
   "link.sourceCode": "Исходный код доступен на <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a>"
 }

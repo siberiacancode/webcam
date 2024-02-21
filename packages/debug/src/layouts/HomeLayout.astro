@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 
 import { ModeToggle } from '@/components/ModeToggle';
-import { FrameworkSelect } from '@/components/FrameworkSelect';
 import { LanguageSelect } from '@/components/LanguageSelect';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -12,11 +11,10 @@ import Seo from './Seo.astro';
 import '@/assets/globals.css';
 
 interface Props extends SeoProps {
-  framework: 'javascript' | 'react';
   language: 'ru' | 'en';
 }
 
-const { framework, language, seo, title, description } = Astro.props;
+const { language, seo, title, description } = Astro.props;
 
 const layoutCollection = await getCollection('layout');
 const translations = layoutCollection.find((translation) => translation.id === language)!;
@@ -46,14 +44,13 @@ const translations = layoutCollection.find((translation) => translation.id === l
     <Seo title={title} description={description} seo={seo} />
   </head>
   <body>
-    <div class='container flex h-screen flex-col justify-between px-4'>
+    <div class='container flex h-screen flex-col px-4'>
       <div>
         <header class='flex items-center justify-between space-y-2 py-4 sm:space-y-0 md:h-16'>
           <h1 class='text-lg font-semibold'>
             <a href='/'>{translations.data.title}</a>
           </h1>
           <div class='flex gap-4'>
-            <FrameworkSelect value={framework} client:load />
             <LanguageSelect value={language} client:load />
             <ModeToggle client:load />
           </div>
@@ -61,12 +58,16 @@ const translations = layoutCollection.find((translation) => translation.id === l
         <slot />
         <Toaster client:load duration={10000} />
       </div>
-      <footer class='mb-5 flex flex-col items-start'>
+      <footer class='flex flex-col items-center justify-center'>
+        <p
+          class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
+        >
+          <span set:html={translations.data['link.sourceCode']} />
+        </p>
         <p
           class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
         >
           <span set:html={translations.data['link.builtBy']} />
-          <span set:html={translations.data['link.sourceCode']} />
         </p>
       </footer>
     </div>

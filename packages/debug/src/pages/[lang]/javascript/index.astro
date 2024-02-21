@@ -1,4 +1,5 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 
 import Layout from '@/layouts/Layout.astro';
@@ -9,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { generateAlternate } from '@/lib/utils';
 
 interface Props {
-  translation: any;
+  translation: CollectionEntry<'javascript'>;
 }
 
 export const getStaticPaths = async () => {
@@ -63,32 +64,38 @@ const { translation } = Astro.props;
 
       <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
       <div class='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
-        <a href={`/${translation.id}/javascript/basic`}>
-          <Card className='transition-transform duration-150 hover:translate-y-[-5px]'>
-            <CardHeader>
-              <CardTitle>{translation.data['card.basic.title']}</CardTitle>
-              <CardDescription>{translation.data['card.basic.description']}</CardDescription>
-            </CardHeader>
-          </Card>
-        </a>
-        <a href={`/${translation.id}/javascript/snapshot`}>
-          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-            <CardHeader>
-              <CardTitle>{translation.data['card.snapshot.title']}</CardTitle>
-              <CardDescription>{translation.data['card.snapshot.description']}</CardDescription>
-            </CardHeader>
-          </Card>
-        </a>
-        <a href={`/${translation.id}/javascript/select-resolution`}>
-          <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-            <CardHeader>
-              <CardTitle>{translation.data['card.selectResolution.title']}</CardTitle>
-              <CardDescription
-                >{translation.data['card.selectResolution.description']}</CardDescription
-              >
-            </CardHeader>
-          </Card>
-        </a>
+        <section>
+          <a href={`/${translation.id}/javascript/basic`}>
+            <Card className='transition-transform duration-150 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.basic.title']}</CardTitle>
+                <CardDescription>{translation.data['card.basic.description']}</CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/snapshot`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.snapshot.title']}</CardTitle>
+                <CardDescription>{translation.data['card.snapshot.description']}</CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/select-resolution`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.selectResolution.title']}</CardTitle>
+                <CardDescription
+                  >{translation.data['card.selectResolution.description']}</CardDescription
+                >
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
       </div>
     </div>
   </section>
