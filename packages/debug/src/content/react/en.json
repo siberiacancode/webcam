@@ -1,4 +1,13 @@
 {
-  "title": "Basic getUserMedia demo",
-  "description": "This is a collection of small samples demonstrating various parts of the WebRTC APIs. The code for all samples are available in the <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a> repository."
+  "title": "React webcam samples",
+  "description": "📸 This is a collection of small samples demonstrating various parts of the WebRTC APIs. The code for all samples are available in the <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a> repository.",
+
+  "card.basic.title": "basic",
+  "card.basic.description": "Basic getUserMedia demo",
+
+  "card.snapshot.title": "snapshot",
+  "card.snapshot.description": "Use getUserMedia with canvas",
+
+  "card.selectResolution.title": "select resolution",
+  "card.selectResolution.description": "Choose camera resolution"
 }
