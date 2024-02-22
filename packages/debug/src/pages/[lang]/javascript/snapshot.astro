@@ -43,9 +43,9 @@ const { translation } = Astro.props;
     video: true
   };
 
-  buttonTakeSnapshot.addEventListener('click', async () => {
+  buttonTakeSnapshot.addEventListener('click', () => {
     try {
-      const canvas = await getVideoFrameCanvas(video);
+      const canvas = getVideoFrameCanvas(video);
       if (!canvas) {
         return toast.error('getVideoFrameCanvas canvas error');
       }

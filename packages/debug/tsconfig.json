@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": "C:/Users/hwapedro/Desktop/projects/react-webcam-ultimate/packages/debug",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
