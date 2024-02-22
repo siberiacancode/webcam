@@ -102,7 +102,7 @@ const { translation } = Astro.props;
 
     <div>
       <div class='flex w-full flex-col justify-start gap-1'>
-        <div class='flex flex-col md:flex-row'>
+        <div class='flex flex-col-reverse items-start md:flex-row'>
           <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
           <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
             {translation.data['link.viewSource']}
