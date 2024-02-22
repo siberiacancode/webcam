@@ -11,11 +11,11 @@ import {
 
 type Theme = 'theme-light' | 'dark' | 'system';
 export const ModeToggle = () => {
-  const onThemeClick = (theme: Theme) => {
+  const onItemClick = (theme: Theme) => {
     const isDark =
       theme === 'dark' ||
       (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+    document.documentElement.classList.toggle('dark', isDark);
   };
 
   return (
@@ -28,9 +28,9 @@ export const ModeToggle = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => onThemeClick('theme-light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onThemeClick('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onThemeClick('system')}>System</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onItemClick('theme-light')}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onItemClick('dark')}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onItemClick('system')}>System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
