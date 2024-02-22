@@ -44,31 +44,20 @@ const translations = layoutCollection.find((translation) => translation.id === l
     <Seo title={title} description={description} seo={seo} />
   </head>
   <body>
-    <div class='container flex h-screen flex-col px-4'>
+    <div class='container flex h-screen flex-col justify-between px-4'>
       <div>
-        <header class='flex items-center justify-between space-y-2 py-4 sm:space-y-0 md:h-16'>
-          <h1 class='text-lg font-semibold'>
-            <a href='/'>{translations.data.title}</a>
-          </h1>
-          <div class='flex gap-4'>
-            <LanguageSelect value={language} client:load />
-            <ModeToggle client:load />
-          </div>
-        </header>
         <slot />
         <Toaster client:load duration={10000} />
       </div>
-      <footer class='flex flex-col items-center justify-center'>
-        <p
-          class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
-        >
-          <span set:html={translations.data['link.sourceCode']} />
-        </p>
-        <p
-          class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
-        >
+      <footer class='mb-5 flex flex-col justify-center gap-4 sm:flex-row sm:justify-between'>
+        <div class='text-balance text-center text-sm leading-loose text-muted-foreground'>
           <span set:html={translations.data['link.builtBy']} />
-        </p>
+          <span set:html={translations.data['link.sourceCode']} />
+        </div>
+        <div class='flex justify-center gap-4'>
+          <LanguageSelect value={language} client:load />
+          <ModeToggle client:load />
+        </div>
       </footer>
     </div>
   </body>

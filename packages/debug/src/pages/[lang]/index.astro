@@ -1,4 +1,5 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
@@ -10,7 +11,7 @@ import react from '@/assets/images/react-original.svg';
 import javascript from '@/assets/images/javascript-original.svg';
 
 interface Props {
-  translation: any;
+  translation: CollectionEntry<'home'>;
 }
 
 export const getStaticPaths = async () => {
@@ -35,10 +36,10 @@ const { translation } = Astro.props;
   description={translation.data.description}
   language={translation.id}
 >
-  <div class='mx-auto w-3/5 py-12'>
+  <div class='mx-auto w-full px-4 py-32 md:w-3/5'>
     <div class='grid gap-6 md:gap-8'>
       <div class='flex flex-col items-center justify-center gap-2'>
-        <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+        <h1 class='text-center text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
         <p
           set:html={translation.data.description}
           class='text-center text-gray-500 dark:text-gray-400'
@@ -46,11 +47,11 @@ const { translation } = Astro.props;
         <Separator className='my-4' />
       </div>
 
-      <div class='ite mx-auto flex flex-col justify-center gap-4'>
+      <div class='mx-auto flex flex-col justify-center gap-4'>
         <sections>
           <a href={`/${translation.id}/javascript`}>
-            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-              <CardHeader className='flex flex-row items-center gap-3'>
+            <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row gap-3'>
                 <Image src={javascript} class='rounded' alt='javascript' width='40' height='40' />
                 <CardTitle>javascript</CardTitle>
               </CardHeader>
@@ -59,8 +60,8 @@ const { translation } = Astro.props;
         </sections>
         <sections>
           <a href={`/${translation.id}/react`}>
-            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
-              <CardHeader className='flex flex-row items-center gap-3'>
+            <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row gap-3'>
                 <Image src={react} alt='react' width='40' height='40' />
                 <CardTitle>react</CardTitle>
               </CardHeader>
