@@ -29,6 +29,8 @@ export const getStaticPaths = async () => {
 };
 
 const { translation } = Astro.props;
+
+export const prerender = true;
 ---
 
 <HomeLayout

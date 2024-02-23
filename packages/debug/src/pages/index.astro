@@ -17,6 +17,8 @@ interface Props {
 const translations = await getCollection('home');
 
 const translation = translations.find((translation) => translation.id === 'en')!;
+
+export const prerender = true;
 ---
 
 <HomeLayout
