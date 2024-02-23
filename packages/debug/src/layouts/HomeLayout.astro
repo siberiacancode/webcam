@@ -49,7 +49,9 @@ const translations = layoutCollection.find((translation) => translation.id === l
         <slot />
         <Toaster client:load duration={10000} />
       </div>
-      <footer class='mb-5 flex flex-col justify-center gap-4 sm:flex-row sm:justify-between'>
+      <footer
+        class='mb-5 flex flex-col-reverse justify-center gap-4 sm:flex-row sm:justify-between'
+      >
         <div class='text-balance text-center text-sm leading-loose text-muted-foreground'>
           <span set:html={translations.data['link.builtBy']} />
           <span set:html={translations.data['link.sourceCode']} />
