@@ -1,13 +1,12 @@
 import { LanguagesIcon } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-
-import { Button } from './ui/button';
 
 const LANGUAGES = {
   ru: 'русский',
@@ -27,11 +26,11 @@ export const LanguageSelect = ({ value }: LanguageSelectProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='outline' className='flex justify-center gap-2'>
-          <LanguagesIcon width='20' height='20' />
+          <LanguagesIcon className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all' />
           <span className='hidden sm:block'>{LANGUAGES[value]}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent>
         <DropdownMenuItem onClick={() => onClick('en')} className='flex justify-start gap-2'>
           <span>{LANGUAGES.en}</span>
         </DropdownMenuItem>

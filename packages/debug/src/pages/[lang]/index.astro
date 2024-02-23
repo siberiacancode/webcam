@@ -52,7 +52,14 @@ const { translation } = Astro.props;
           <a href={`/${translation.id}/javascript`}>
             <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
               <CardHeader className='flex flex-row gap-3'>
-                <Image src={javascript} class='rounded' alt='javascript' width='40' height='40' />
+                <Image
+                  loading='eager'
+                  src={javascript}
+                  class='rounded'
+                  alt='javascript'
+                  width='40'
+                  height='40'
+                />
                 <CardTitle>javascript</CardTitle>
               </CardHeader>
             </Card>
@@ -62,7 +69,7 @@ const { translation } = Astro.props;
           <a href={`/${translation.id}/react`}>
             <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
               <CardHeader className='flex flex-row gap-3'>
-                <Image src={react} alt='react' width='40' height='40' />
+                <Image loading='eager' src={react} alt='react' width='40' height='40' />
                 <CardTitle>react</CardTitle>
               </CardHeader>
             </Card>

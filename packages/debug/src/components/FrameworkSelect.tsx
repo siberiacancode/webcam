@@ -12,11 +12,23 @@ import { Button } from './ui/button';
 
 const FRAMEWORKS = {
   javascript: {
-    icon: <img src={javascript.src} className='rounded' alt='javascript' width='20' height='20' />,
+    icon: (
+      <img
+        src={javascript.src}
+        alt='javascript'
+        className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 rounded transition-all'
+      />
+    ),
     name: 'javascript'
   },
   react: {
-    icon: <img src={react.src} alt='react' width='20' height='20' />,
+    icon: (
+      <img
+        src={react.src}
+        alt='react'
+        className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 rounded transition-all'
+      />
+    ),
     name: 'react'
   }
 };

@@ -52,7 +52,7 @@ const translations = layoutCollection.find((translation) => translation.id === l
           <h1 class='text-lg font-semibold'>
             <a href='/'>{translations.data.title}</a>
           </h1>
-          <div class='flex gap-4'>
+          <div class='flex gap-3'>
             <FrameworkSelect value={framework} client:load />
             <LanguageSelect value={language} client:load />
             <ModeToggle client:load />
