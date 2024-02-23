@@ -203,7 +203,6 @@ build/Release
 **/playwright/report
 
 # Gatsby
-public
 .cache
 gatsby-types.d.ts
 
