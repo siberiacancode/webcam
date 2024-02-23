@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 export interface Props {
   title: string;
@@ -117,3 +118,4 @@ const { seo, title, description } = Astro.props;
   </iframe>
 </noscript>
 <!-- End Google Tag Manager (noscript) -->
+<SpeedInsights />
