@@ -102,21 +102,23 @@ export const prerender = true;
     }
   });
 
-  inputRangeResolution.addEventListener('mouseup', async (event: any) => {
-    try {
-      const width = event.target.value;
-      const videoConstraint = { width: { exact: +width } };
-      inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
-        /\d+/g,
-        `${width}`
-      );
-      await applyMediaStreamConstraints(stream, { video: videoConstraint });
-      console.log('Apply constraints for stream:', videoConstraint);
-      toast.success(`Apply constraint success w: ${width}`);
-    } catch (error: any) {
-      toast.error(`applyMediaStreamConstraints error: ${error}`, error);
-    }
-  });
+  ['mouseup', 'touchend'].forEach((event) =>
+    inputRangeResolution.addEventListener(event, async (event: any) => {
+      try {
+        const width = event.target.value;
+        const videoConstraint = { width: { exact: +width } };
+        inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+          /\d+/g,
+          `${width}`
+        );
+        await applyMediaStreamConstraints(stream, { video: videoConstraint });
+        console.log('Apply constraints for stream:', videoConstraint);
+        toast.success(`Apply constraint success w: ${width}`);
+      } catch (error: any) {
+        toast.error(`applyMediaStreamConstraints error: ${error}`, error);
+      }
+    })
+  );
 
   const video = document.getElementById('camera')! as HTMLVideoElement;
   let stream = await getMediaStream({ constraints: { video: RESOLUTIONS.qvga } });
