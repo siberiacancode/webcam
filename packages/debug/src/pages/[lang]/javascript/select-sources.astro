@@ -95,7 +95,13 @@ export const prerender = true;
           videoSelect.appendChild(option);
         }
 
-        console.log('Some other kind of source/device: ', device);
+        if (
+          device.kind !== 'audioinput' &&
+          device.kind !== 'audiooutput' &&
+          device.kind !== 'videoinput'
+        ) {
+          console.log('Some other kind of source/device: ', device);
+        }
       });
 
       selectors.forEach((select, index) => {
@@ -134,9 +140,7 @@ export const prerender = true;
     const audioOutputDeviceId = audioOutputSelect.value;
 
     // @ts-ignore
-    const { sinkId } = video;
-
-    if (!sinkId) {
+    if (video.sinkId === 'undefined') {
       toast.error('Browser does not support output device selection');
       return;
     }
@@ -146,12 +150,12 @@ export const prerender = true;
       await video.setSinkId(audioOutputDeviceId);
       toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
     } catch (error: any) {
-      let errorMessage = error;
       if (error.name === 'SecurityError') {
         toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
       }
-      toast.error(errorMessage);
-      console.error(errorMessage);
+
+      toast.error(`changeAudioDestination error: ${error}`, error);
+      console.error(error);
       audioOutputSelect.selectedIndex = 0;
     }
   };
