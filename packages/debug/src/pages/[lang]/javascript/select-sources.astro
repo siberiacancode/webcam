@@ -66,55 +66,75 @@ export const prerender = true;
   };
 
   const gotDevices = async () => {
+    const devices = await getDevices();
+    const values = selectors.map((select) => select.value);
+
+    selectors.forEach((select) => {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    });
+
+    devices.forEach((device) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+
+      if (device.kind === 'audioinput') {
+        option.text = device.label || `microphone ${audioInputSelect.length + 1}`;
+        audioInputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'audiooutput') {
+        option.text = device.label || `speaker ${audioOutputSelect.length + 1}`;
+        audioOutputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'videoinput') {
+        option.text = device.label || `camera ${videoSelect.length + 1}`;
+        videoSelect.appendChild(option);
+      }
+
+      if (
+        device.kind !== 'audioinput' &&
+        device.kind !== 'audiooutput' &&
+        device.kind !== 'videoinput'
+      ) {
+        console.log('Some other kind of source/device: ', device);
+      }
+    });
+
+    selectors.forEach((select, index) => {
+      if (
+        Array.prototype.slice
+          .call(select.childNodes)
+          .some((option) => option.value === values[index])
+      ) {
+        select.value = values[index];
+      }
+    });
+  };
+
+  const changeAudioDestination = async () => {
+    const audioOutputDeviceId = audioOutputSelect.value;
+
+    // @ts-ignore
+    if (video.sinkId === 'undefined') {
+      toast.error('Browser does not support output device selection');
+      return;
+    }
+
     try {
-      const devices = await getDevices();
-      const values = selectors.map((select) => select.value);
-
-      selectors.forEach((select) => {
-        while (select.firstChild) {
-          select.removeChild(select.firstChild);
-        }
-      });
-
-      devices.forEach((device) => {
-        const option = document.createElement('option');
-        option.value = device.deviceId;
-
-        if (device.kind === 'audioinput') {
-          option.text = device.label || `microphone ${audioInputSelect.length + 1}`;
-          audioInputSelect.appendChild(option);
-        }
-
-        if (device.kind === 'audiooutput') {
-          option.text = device.label || `speaker ${audioOutputSelect.length + 1}`;
-          audioOutputSelect.appendChild(option);
-        }
-
-        if (device.kind === 'videoinput') {
-          option.text = device.label || `camera ${videoSelect.length + 1}`;
-          videoSelect.appendChild(option);
-        }
-
-        if (
-          device.kind !== 'audioinput' &&
-          device.kind !== 'audiooutput' &&
-          device.kind !== 'videoinput'
-        ) {
-          console.log('Some other kind of source/device: ', device);
-        }
-      });
-
-      selectors.forEach((select, index) => {
-        if (
-          Array.prototype.slice
-            .call(select.childNodes)
-            .some((option) => option.value === values[index])
-        ) {
-          select.value = values[index];
-        }
-      });
+      // @ts-ignore
+      await video.setSinkId(audioOutputDeviceId);
+      toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
     } catch (error: any) {
-      throw new Error(error);
+      if (error.name === 'SecurityError') {
+        toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
+      }
+
+      toast.error(`changeAudioDestination error: ${error}`, error);
+      console.error(error);
+      audioOutputSelect.selectedIndex = 0;
     }
   };
 
@@ -129,38 +149,13 @@ export const prerender = true;
       audio: { deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined },
       video: { deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined }
     };
+
     stream = await getMediaStream({ constraints });
-    startStream(stream);
-    gotDevices();
+    await startStream(stream);
+    await gotDevices();
   };
 
   start();
-
-  const changeAudioDestination = async () => {
-    const audioOutputDeviceId = audioOutputSelect.value;
-
-    // @ts-ignore
-    if (video.sinkId === 'undefined') {
-      toast.error('Browser does not support output device selection');
-      return;
-    }
-
-    video
-      // @ts-ignore
-      .setSinkId(audioOutputDeviceId)
-      .then(() => {
-        toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
-      })
-      .catch((error: any) => {
-        if (error.name === 'SecurityError') {
-          toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
-        }
-
-        toast.error(`changeAudioDestination error: ${error}`, error);
-        console.error(error);
-        audioOutputSelect.selectedIndex = 0;
-      });
-  };
 
   audioOutputSelect.onchange = changeAudioDestination;
   audioInputSelect.onchange = start;
