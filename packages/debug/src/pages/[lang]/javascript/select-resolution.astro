@@ -80,7 +80,7 @@ export const prerender = true;
     }
   };
 
-  checkboxLockAspectRatio.change = async () => {
+  checkboxLockAspectRatio.onchange = async () => {
     try {
       let videoConstraint;
       if (checkboxLockAspectRatio.checked) {
@@ -125,7 +125,9 @@ export const prerender = true;
   startStream(stream);
   document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
 
-  const resolutions = Array.from(document.getElementById('resolution')!.children);
+  const resolutions = Array.from(
+    document.getElementById('resolution')!.children
+  )! as HTMLDivElement[];
   resolutions.forEach(
     (resolution) =>
       (resolution.click = async () => {
