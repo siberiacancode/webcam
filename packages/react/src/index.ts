@@ -4,6 +4,7 @@ export { Webcam } from './components/Webcam/Webcam';
 export {
   applyMediaStreamConstraints,
   canGetUserMedia,
+  getDevices,
   getMediaStream,
   stopMediaStream
 } from './utils/helpers';

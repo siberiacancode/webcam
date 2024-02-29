@@ -1,0 +1,15 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<div
+  class='flex w-fit items-center gap-2 rounded-xl bg-indigo-800 p-2 leading-none text-indigo-100'
+  role='alert'
+>
+  <span class='flex rounded-full bg-indigo-600 px-2 py-1 text-xs font-bold uppercase'> Note </span>
+  <span class='mr-2 flex-auto text-left text-sm font-semibold'>{text}</span>
+</div>

@@ -80,7 +80,7 @@ export const prerender = true;
     }
   };
 
-  checkboxLockAspectRatio.addEventListener('change', async () => {
+  checkboxLockAspectRatio.change = async () => {
     try {
       let videoConstraint;
       if (checkboxLockAspectRatio.checked) {
@@ -100,7 +100,7 @@ export const prerender = true;
     } catch (error: any) {
       toast.error(`applyMediaStreamConstraints error: ${error}`, error);
     }
-  });
+  };
 
   ['mouseup', 'touchend'].forEach((event) =>
     inputRangeResolution.addEventListener(event, async (event: any) => {
@@ -126,65 +126,66 @@ export const prerender = true;
   document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
 
   const resolutions = Array.from(document.getElementById('resolution')!.children);
-  resolutions.forEach((resolution) =>
-    resolution.addEventListener('click', async () => {
-      if (selectedId === resolution.id) return;
+  resolutions.forEach(
+    (resolution) =>
+      (resolution.click = async () => {
+        if (selectedId === resolution.id) return;
 
-      const prevResolution = resolutions.find((resolution) => resolution.id === selectedId);
-      if (prevResolution) prevResolution.className = badgeVariants({ variant: 'default' });
+        const prevResolution = resolutions.find((resolution) => resolution.id === selectedId);
+        if (prevResolution) prevResolution.className = badgeVariants({ variant: 'default' });
 
-      selectedId = resolution.id;
-      resolution.className = badgeVariants({ variant: 'secondary' });
+        selectedId = resolution.id;
+        resolution.className = badgeVariants({ variant: 'secondary' });
 
-      const videoConstraint = RESOLUTIONS[resolution.id as keyof typeof RESOLUTIONS];
-      const width = videoConstraint.width.exact.toString();
-      inputRangeResolution.value = width;
-      inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
-        /\d+/g,
-        width
-      );
-
-      const constraints = {
-        audio: false,
-        video: videoConstraint
-      };
-
-      try {
-        stream && stopMediaStream(stream);
-        stream = await getMediaStream({ constraints });
-        startStream(stream);
-      } catch (error: any) {
-        const _prevResolution = resolutions.find(
-          (resolution) => resolution.id === prevResolution?.id
+        const videoConstraint = RESOLUTIONS[resolution.id as keyof typeof RESOLUTIONS];
+        const width = videoConstraint.width.exact.toString();
+        inputRangeResolution.value = width;
+        inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+          /\d+/g,
+          width
         );
-        if (_prevResolution) {
-          selectedId = _prevResolution.id;
-          _prevResolution.className = badgeVariants({ variant: 'secondary' });
-          const prevVideoConstraint = RESOLUTIONS[_prevResolution.id as keyof typeof RESOLUTIONS];
-          const width = prevVideoConstraint.width.exact.toString();
-          inputRangeResolution.value = width;
-          inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
-            /\d+/g,
-            width
-          );
-        }
-        resolution.className = badgeVariants({ variant: 'destructive' });
 
-        if (error?.name === 'OverconstrainedError') {
-          return toast.error(
-            `The resolution ${videoConstraint.width.exact}x${videoConstraint.height.exact} px is not supported by your device.`
-          );
-        }
+        const constraints = {
+          audio: false,
+          video: videoConstraint
+        };
 
-        if (error?.name === 'NotAllowedError') {
-          return toast.error(
-            'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+        try {
+          stream && stopMediaStream(stream);
+          stream = await getMediaStream({ constraints });
+          startStream(stream);
+        } catch (error: any) {
+          const _prevResolution = resolutions.find(
+            (resolution) => resolution.id === prevResolution?.id
           );
-        }
+          if (_prevResolution) {
+            selectedId = _prevResolution.id;
+            _prevResolution.className = badgeVariants({ variant: 'secondary' });
+            const prevVideoConstraint = RESOLUTIONS[_prevResolution.id as keyof typeof RESOLUTIONS];
+            const width = prevVideoConstraint.width.exact.toString();
+            inputRangeResolution.value = width;
+            inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+              /\d+/g,
+              width
+            );
+          }
+          resolution.className = badgeVariants({ variant: 'destructive' });
 
-        toast.error(`getUserMedia error: ${error}`, error);
-      }
-    })
+          if (error?.name === 'OverconstrainedError') {
+            return toast.error(
+              `The resolution ${videoConstraint.width.exact}x${videoConstraint.height.exact} px is not supported by your device.`
+            );
+          }
+
+          if (error?.name === 'NotAllowedError') {
+            return toast.error(
+              'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+            );
+          }
+
+          toast.error(`getUserMedia error: ${error}`, error);
+        }
+      })
   );
 </script>
 

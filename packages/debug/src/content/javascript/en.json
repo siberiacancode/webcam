@@ -9,5 +9,8 @@
   "card.snapshot.description": "Use getUserMedia with canvas",
 
   "card.selectResolution.title": "select resolution",
-  "card.selectResolution.description": "Choose camera resolution"
+  "card.selectResolution.description": "Choose camera resolution",
+
+  "card.selectSources.title": "select sources",
+  "card.selectSources.description": "Select sources & outputs"
 }

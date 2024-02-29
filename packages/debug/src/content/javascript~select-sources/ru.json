@@ -1,0 +1,14 @@
+{
+  "title": "Выберите источники и выходы",
+  "description": "Получите доступные источники аудио, видео и устройства вывода звука из mediaDevices.enumerateDevices()",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.selectSources": "Выберите источники и выходы",
+
+  "select.audioInput.label": "Audio input source:",
+  "select.audioOutput.label": "Audio output destination:",
+  "select.videoSource.label": "Video source",
+
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}

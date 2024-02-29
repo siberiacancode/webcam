@@ -20,7 +20,10 @@ const javascriptCollection = defineCollection({
     'card.snapshot.description': z.string(),
 
     'card.selectResolution.title': z.string(),
-    'card.selectResolution.description': z.string()
+    'card.selectResolution.description': z.string(),
+
+    'card.selectSources.title': z.string(),
+    'card.selectSources.description': z.string()
   })
 });
 
@@ -55,6 +58,24 @@ const javascriptSelectResolutionBasicCollection = defineCollection({
   })
 });
 
+const javascriptSelectSourcesBasicCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+
+    'breadcrumbs.home': z.string(),
+    'breadcrumbs.javascript': z.string(),
+    'breadcrumbs.selectSources': z.string(),
+
+    'select.audioInput.label': z.string(),
+    'select.audioOutput.label': z.string(),
+    'select.videoSource.label': z.string(),
+
+    'link.viewSource': z.string()
+  })
+});
+
 const javascriptSnapshotBasicCollection = defineCollection({
   type: 'data',
   schema: z.object({
@@ -79,6 +100,7 @@ export const collections = {
   home: homeBasicCollection,
   javascript: javascriptCollection,
   'javascript~basic': javascriptBasicCollection,
+  'javascript~select-sources': javascriptSelectSourcesBasicCollection,
   'javascript~select-resolution': javascriptSelectResolutionBasicCollection,
   'javascript~snapshot': javascriptSnapshotBasicCollection,
   layout: layoutCollection

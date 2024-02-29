@@ -91,9 +91,21 @@ export const prerender = true;
             <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
               <CardHeader>
                 <CardTitle>{translation.data['card.selectResolution.title']}</CardTitle>
-                <CardDescription
-                  >{translation.data['card.selectResolution.description']}</CardDescription
-                >
+                <CardDescription>
+                  {translation.data['card.selectResolution.description']}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/select-sources`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.selectSources.title']}</CardTitle>
+                <CardDescription>
+                  {translation.data['card.selectSources.description']}
+                </CardDescription>
               </CardHeader>
             </Card>
           </a>
