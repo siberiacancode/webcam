@@ -145,19 +145,21 @@ export const prerender = true;
       return;
     }
 
-    try {
+    video
       // @ts-ignore
-      await video.setSinkId(audioOutputDeviceId);
-      toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
-    } catch (error: any) {
-      if (error.name === 'SecurityError') {
-        toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
-      }
+      .setSinkId(audioOutputDeviceId)
+      .then(() => {
+        toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
+      })
+      .catch((error: any) => {
+        if (error.name === 'SecurityError') {
+          toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
+        }
 
-      toast.error(`changeAudioDestination error: ${error}`, error);
-      console.error(error);
-      audioOutputSelect.selectedIndex = 0;
-    }
+        toast.error(`changeAudioDestination error: ${error}`, error);
+        console.error(error);
+        audioOutputSelect.selectedIndex = 0;
+      });
   };
 
   audioOutputSelect.onchange = changeAudioDestination;
