@@ -6,6 +6,7 @@ import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import Checkbox from '@/components/Checkbox.astro';
 
 import { generateAlternate } from '@/lib/utils';
 
@@ -252,19 +253,10 @@ export const prerender = true;
           </span>
         </div>
         <input id='input-range-resolution' type='range' min='0' max='7680' value='320' />
-        <div class='flex items-center'>
-          <input
-            id='checkbox-lock-aspect-ratio'
-            type='checkbox'
-            class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
-          />
-          <label
-            for='link-checkbox'
-            class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-          >
-            {translation.data['checkbox.lockAspectRatio.label']}
-          </label>
-        </div>
+        <Checkbox
+          id='checkbox-lock-aspect-ratio'
+          label={translation.data['checkbox.lockAspectRatio.label']}
+        />
       </div>
       <video id='camera' autoplay playsinline></video>
     </div>

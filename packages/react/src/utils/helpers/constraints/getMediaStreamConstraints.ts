@@ -33,10 +33,6 @@ export const getMediaStreamConstraints = async ({
     videoConstraints = constraintsBySource.video;
   }
 
-  console.log('@otherConstraints', otherConstraints);
-  console.log('@audioConstraints', audioConstraints);
-  console.log('@videoConstraints', videoConstraints);
-
   const finalConstraints: MediaStreamConstraints = {
     ...otherConstraints,
     ...((!muted || audio) && {
@@ -45,6 +41,5 @@ export const getMediaStreamConstraints = async ({
     video: typeof videoConstraints !== 'undefined' ? videoConstraints : true
   };
 
-  console.log('@finalConstraints', finalConstraints);
   return finalConstraints;
 };

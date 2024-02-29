@@ -7,6 +7,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Select from '@/components/Select.astro';
 import Alert from '@/components/Alert.astro';
+import Checkbox from '@/components/Checkbox.astro';
 
 import { generateAlternate } from '@/lib/utils';
 
@@ -39,10 +40,12 @@ export const prerender = true;
   import { getMediaStream, stopMediaStream, getDevices } from '@webcam/react';
 
   const video = document.getElementById('camera')! as HTMLVideoElement;
+  const checkboxMuted = document.getElementById('checkbox-muted')! as HTMLInputElement;
   const [audioInputSelect, audioOutputSelect, videoSelect] =
     document.getElementsByTagName('select')!;
   const selectors = [audioInputSelect, audioOutputSelect, videoSelect];
 
+  checkboxMuted.checked = true;
   audioOutputSelect.disabled = !('sinkId' in HTMLMediaElement.prototype);
 
   const startStream = async (stream: MediaStream) => {
@@ -146,7 +149,11 @@ export const prerender = true;
     const audioInputDeviceId = audioInputSelect.value;
     const videoDeviceId = videoSelect.value;
     const constraints = {
-      audio: { deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined },
+      ...(!checkboxMuted.checked && {
+        audio: {
+          deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined
+        }
+      }),
       video: { deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined }
     };
 
@@ -157,6 +164,7 @@ export const prerender = true;
 
   start();
 
+  checkboxMuted.onchange = start;
   audioOutputSelect.onchange = changeAudioDestination;
   audioInputSelect.onchange = start;
   videoSelect.onchange = start;
@@ -212,9 +220,12 @@ export const prerender = true;
       </div>
 
       <div class='my-4 flex flex-col gap-2'>
-        <Select id='select_audio_input' label='Audio input source:' />
-        <Select id='select_audio_output' label='Audio output destination:' />
-        <Select id='select_video_source' label='Video source:' />
+        <Select id='select-audio-input' label='Audio input source:' />
+        <Select id='select-audio-output' label='Audio output destination:' />
+        <div class='px-2'>
+          <Checkbox id='checkbox-muted' label='muted' checked />
+        </div>
+        <Select id='select-video-source' label='Video source:' />
       </div>
       <video id='camera' autoplay playsinline></video>
     </div>
