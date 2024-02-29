@@ -12,5 +12,8 @@
   "card.selectResolution.description": "Выбор разрешение камеры",
 
   "card.selectSources.title": "выбор устройств",
-  "card.selectSources.description": "Выберите источники и выходы"
+  "card.selectSources.description": "Выберите источники и выходы",
+
+  "card.mediaPanel.title": "select sources",
+  "card.mediaPanel.description": "Select sources & outputs"
 }

@@ -23,7 +23,10 @@ const javascriptCollection = defineCollection({
     'card.selectResolution.description': z.string(),
 
     'card.selectSources.title': z.string(),
-    'card.selectSources.description': z.string()
+    'card.selectSources.description': z.string(),
+
+    'card.mediaPanel.title': z.string(),
+    'card.mediaPanel.description': z.string()
   })
 });
 
@@ -38,6 +41,31 @@ const javascriptBasicCollection = defineCollection({
     'breadcrumbs.basic': z.string(),
 
     'button.openCamera': z.string(),
+    'link.viewSource': z.string()
+  })
+});
+
+const javascriptSelectMediaPanelCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+
+    'breadcrumbs.home': z.string(),
+    'breadcrumbs.javascript': z.string(),
+    'breadcrumbs.mediaPanel': z.string(),
+
+    'alert.warning': z.string(),
+
+    'select.audioInput.label': z.string(),
+    'select.audioOutput.label': z.string(),
+    'select.videoSource.label': z.string(),
+
+    'checkbox.audioOutputMuted.label': z.string(),
+    'checkbox.lockAspectRatio.label': z.string(),
+
+    'slider.width.label': z.string(),
+
     'link.viewSource': z.string()
   })
 });
@@ -68,9 +96,13 @@ const javascriptSelectSourcesBasicCollection = defineCollection({
     'breadcrumbs.javascript': z.string(),
     'breadcrumbs.selectSources': z.string(),
 
+    'alert.warning': z.string(),
+
     'select.audioInput.label': z.string(),
     'select.audioOutput.label': z.string(),
     'select.videoSource.label': z.string(),
+
+    'checkbox.audioOutputMuted.label': z.string(),
 
     'link.viewSource': z.string()
   })
@@ -100,6 +132,7 @@ export const collections = {
   home: homeBasicCollection,
   javascript: javascriptCollection,
   'javascript~basic': javascriptBasicCollection,
+  'javascript~media-panel': javascriptSelectMediaPanelCollection,
   'javascript~select-sources': javascriptSelectSourcesBasicCollection,
   'javascript~select-resolution': javascriptSelectResolutionBasicCollection,
   'javascript~snapshot': javascriptSnapshotBasicCollection,

@@ -40,12 +40,14 @@ export const prerender = true;
   import { getMediaStream, stopMediaStream, getDevices } from '@webcam/react';
 
   const video = document.getElementById('camera')! as HTMLVideoElement;
-  const checkboxMuted = document.getElementById('checkbox-muted')! as HTMLInputElement;
+  const checkboxAudioOutputMuted = document.getElementById(
+    'checkbox-audio-output-muted'
+  )! as HTMLInputElement;
   const [audioInputSelect, audioOutputSelect, videoSelect] =
     document.getElementsByTagName('select')!;
   const selectors = [audioInputSelect, audioOutputSelect, videoSelect];
 
-  checkboxMuted.checked = true;
+  checkboxAudioOutputMuted.checked = true;
   audioOutputSelect.disabled = !('sinkId' in HTMLMediaElement.prototype);
 
   const startStream = async (stream: MediaStream) => {
@@ -149,7 +151,7 @@ export const prerender = true;
     const audioInputDeviceId = audioInputSelect.value;
     const videoDeviceId = videoSelect.value;
     const constraints = {
-      ...(!checkboxMuted.checked && {
+      ...(!checkboxAudioOutputMuted.checked && {
         audio: {
           deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined
         }
@@ -157,14 +159,14 @@ export const prerender = true;
       video: { deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined }
     };
 
+    await gotDevices();
     stream = await getMediaStream({ constraints });
     await startStream(stream);
-    await gotDevices();
   };
 
   start();
 
-  checkboxMuted.onchange = start;
+  checkboxAudioOutputMuted.onchange = start;
   audioOutputSelect.onchange = changeAudioDestination;
   audioInputSelect.onchange = start;
   videoSelect.onchange = start;
@@ -214,18 +216,19 @@ export const prerender = true;
       </div>
 
       <div>
-        <Alert
-          text='without permission, the browser will restrict the available devices to at most one pertype.'
-        />
+        <Alert text={translation.data['alert.warning']} />
       </div>
 
       <div class='my-4 flex flex-col gap-2'>
-        <Select id='select-audio-input' label='Audio input source:' />
-        <Select id='select-audio-output' label='Audio output destination:' />
+        <Select id='select-audio-input' label={translation.data['select.audioInput.label']} />
+        <Select id='select-audio-output' label={translation.data['select.audioOutput.label']} />
         <div class='px-2'>
-          <Checkbox id='checkbox-muted' label='muted' />
+          <Checkbox
+            id='checkbox-audio-output-muted'
+            label={translation.data['checkbox.audioOutputMuted.label']}
+          />
         </div>
-        <Select id='select-video-source' label='Video source:' />
+        <Select id='select-video-source' label={translation.data['select.videoSource.label']} />
       </div>
       <video id='camera' autoplay playsinline></video>
     </div>

@@ -1,10 +1,10 @@
 {
-  "title": "Выберите источники и выходы",
-  "description": "Получите доступные источники аудио, видео и устройства вывода звука из mediaDevices.enumerateDevices()",
+  "title": "Играйте с метаданными",
+  "description": "Получите доступные аудио-, видеоисточники и устройства вывода звука с соответствующим разрешением.",
 
   "breadcrumbs.home": "Главная",
   "breadcrumbs.javascript": "Javascript",
-  "breadcrumbs.selectSources": "Выберите источники и выходы",
+  "breadcrumbs.mediaPanel": "Играйте с метаданными",
 
   "alert.warning": "без разрешения браузер ограничит доступные устройства не более чем одним устройством каждого типа",
 
@@ -13,6 +13,9 @@
   "select.videoSource.label": "Источник видео",
 
   "checkbox.audioOutputMuted.label": "вывод звука заглушить",
+  "checkbox.lockAspectRatio.label": "lock aspect ratio",
+
+  "slider.width.label": "width",
 
   "link.viewSource": "Просмотреть исходный код на GitHub"
 }

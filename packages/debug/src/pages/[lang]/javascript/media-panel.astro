@@ -4,8 +4,10 @@ import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import { Breadcrumbs } from '@/layouts/Breadcrumbs';
 import { buttonVariants } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import Select from '@/components/Select.astro';
+import Alert from '@/components/Alert.astro';
 import Checkbox from '@/components/Checkbox.astro';
 
 import { generateAlternate } from '@/lib/utils';
@@ -15,7 +17,7 @@ interface Props {
 }
 
 export const getStaticPaths = async () => {
-  const translations = await getCollection('javascript~select-resolution');
+  const translations = await getCollection('javascript~media-panel');
 
   const paths = translations.map((translation) => ({
     params: {
@@ -38,10 +40,19 @@ export const prerender = true;
 
   import { badgeVariants } from '@/components/ui/badge';
   import { RESOLUTIONS } from '@/utils/constants';
-  import { getMediaStream, stopMediaStream, applyMediaStreamConstraints } from '@webcam/react';
+  import {
+    getMediaStream,
+    stopMediaStream,
+    getDevices,
+    applyMediaStreamConstraints
+  } from '@webcam/react';
 
   let selectedId: keyof typeof RESOLUTIONS = 'qvga';
 
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  const checkboxAudioOutputMuted = document.getElementById(
+    'checkbox-audio-output-muted'
+  )! as HTMLInputElement;
   const checkboxLockAspectRatio = document.getElementById(
     'checkbox-lock-aspect-ratio'
   )! as HTMLInputElement;
@@ -52,24 +63,42 @@ export const prerender = true;
     'input-range-resolution-label'
   )! as HTMLSpanElement;
 
-  const startStream = (stream: MediaStream) => {
-    try {
-      // @ts-ignore
-      window.stream = stream;
-      video.srcObject = stream;
+  const [audioInputSelect, audioOutputSelect, videoSelect] =
+    document.getElementsByTagName('select')!;
+  const selectors = [audioInputSelect, audioOutputSelect, videoSelect];
 
-      const videoTracks = stream.getVideoTracks();
+  checkboxAudioOutputMuted.checked = true;
+  audioOutputSelect.disabled = !('sinkId' in HTMLMediaElement.prototype);
+  document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
 
-      const [videoDevice] = videoTracks;
-      console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
-      toast.success(`Using video device: ${videoDevice.label}`);
+  let stream: MediaStream | undefined;
 
-      const captions = document.createElement('captions');
-      captions.innerHTML = videoDevice.label;
-      video.appendChild(captions);
-    } catch (error: any) {
-      throw new Error(error);
-    }
+  const getConstraints = () => {
+    const audioInputDeviceId = audioInputSelect.value;
+    const videoDeviceId = videoSelect.value;
+
+    console.log('@getConstraints', {
+      ...(!checkboxAudioOutputMuted.checked && {
+        audio: {
+          deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined
+        }
+      }),
+      video: {
+        ...RESOLUTIONS[selectedId as keyof typeof RESOLUTIONS],
+        deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined
+      }
+    });
+    return {
+      ...(!checkboxAudioOutputMuted.checked && {
+        audio: {
+          deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined
+        }
+      }),
+      video: {
+        ...RESOLUTIONS[selectedId as keyof typeof RESOLUTIONS],
+        deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined
+      }
+    };
   };
 
   checkboxLockAspectRatio.onchange = async () => {
@@ -88,7 +117,7 @@ export const prerender = true;
         toast.success(`Apply constraint success w: ${+inputRangeResolution.value}`);
       }
       console.log('Apply constraints for stream:', videoConstraint);
-      await applyMediaStreamConstraints(stream, { video: videoConstraint });
+      await applyMediaStreamConstraints(stream!, { video: videoConstraint });
     } catch (error: any) {
       toast.error(`applyMediaStreamConstraints error: ${error}`, error);
     }
@@ -103,7 +132,7 @@ export const prerender = true;
           /\d+/g,
           `${width}`
         );
-        await applyMediaStreamConstraints(stream, { video: videoConstraint });
+        await applyMediaStreamConstraints(stream!, { video: videoConstraint });
         console.log('Apply constraints for stream:', videoConstraint);
         toast.success(`Apply constraint success w: ${width}`);
       } catch (error: any) {
@@ -112,10 +141,108 @@ export const prerender = true;
     })
   );
 
-  const video = document.getElementById('camera')! as HTMLVideoElement;
-  let stream = await getMediaStream({ constraints: { video: RESOLUTIONS.qvga } });
-  startStream(stream);
-  document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
+  const startStream = async (stream: MediaStream) => {
+    try {
+      // @ts-ignore
+      window.stream = stream;
+      video.srcObject = stream;
+
+      const videoTracks = stream.getVideoTracks();
+      const [videoDevice] = videoTracks;
+
+      console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
+      toast.success(`Using video device: ${videoDevice.label}`);
+
+      const captions = document.createElement('captions');
+      captions.innerHTML = videoDevice.label;
+      video.appendChild(captions);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  const gotDevices = async () => {
+    const devices = await getDevices();
+    const values = selectors.map((select) => select.value);
+
+    selectors.forEach((select) => {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    });
+
+    devices.forEach((device) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+
+      if (device.kind === 'audioinput') {
+        option.text = device.label || `microphone ${audioInputSelect.length + 1}`;
+        audioInputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'audiooutput') {
+        option.text = device.label || `speaker ${audioOutputSelect.length + 1}`;
+        audioOutputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'videoinput') {
+        option.text = device.label || `camera ${videoSelect.length + 1}`;
+        videoSelect.appendChild(option);
+      }
+
+      if (
+        device.kind !== 'audioinput' &&
+        device.kind !== 'audiooutput' &&
+        device.kind !== 'videoinput'
+      ) {
+        console.log('Some other kind of source/device: ', device);
+      }
+    });
+
+    selectors.forEach((select, index) => {
+      if (
+        Array.prototype.slice
+          .call(select.childNodes)
+          .some((option) => option.value === values[index])
+      ) {
+        select.value = values[index];
+      }
+    });
+  };
+
+  const changeAudioDestination = async () => {
+    const audioOutputDeviceId = audioOutputSelect.value;
+
+    // @ts-ignore
+    if (video.sinkId === 'undefined') {
+      toast.error('Browser does not support output device selection');
+      return;
+    }
+
+    try {
+      // @ts-ignore
+      await video.setSinkId(audioOutputDeviceId);
+      toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
+    } catch (error: any) {
+      if (error.name === 'SecurityError') {
+        toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
+      }
+
+      toast.error(`changeAudioDestination error: ${error}`, error);
+      console.error(error);
+      audioOutputSelect.selectedIndex = 0;
+    }
+  };
+
+  const start = async () => {
+    if (stream) {
+      stopMediaStream(stream);
+    }
+
+    await gotDevices();
+    stream = await getMediaStream({ constraints: getConstraints() });
+    await startStream(stream);
+  };
 
   const resolutions = Array.from(
     document.getElementById('resolution')!.children
@@ -139,14 +266,13 @@ export const prerender = true;
           width
         );
 
-        const constraints = {
-          audio: false,
-          video: videoConstraint
-        };
-
         try {
           stream && stopMediaStream(stream);
-          stream = await getMediaStream({ constraints });
+          const constraints = getConstraints();
+          stream = await getMediaStream({
+            constraints: { ...constraints, video: { ...constraints.video, ...videoConstraint } }
+          });
+
           startStream(stream);
         } catch (error: any) {
           const _prevResolution = resolutions.find(
@@ -181,6 +307,13 @@ export const prerender = true;
         }
       })
   );
+
+  start();
+
+  checkboxAudioOutputMuted.onchange = start;
+  audioOutputSelect.onchange = changeAudioDestination;
+  audioInputSelect.onchange = start;
+  videoSelect.onchange = start;
 </script>
 
 <Layout
@@ -189,7 +322,7 @@ export const prerender = true;
   framework='javascript'
   language={translation.id}
   seo={{
-    languageAlternates: generateAlternate('/javascript/select-resolution')
+    languageAlternates: generateAlternate('/javascript/media-panel')
   }}
 >
   <section class='w-full py-12'>
@@ -205,7 +338,7 @@ export const prerender = true;
           children: translation.data['breadcrumbs.javascript']
         },
         {
-          children: translation.data['breadcrumbs.selectResolution']
+          children: translation.data['breadcrumbs.mediaPanel']
         }
       ]}
     />
@@ -226,6 +359,21 @@ export const prerender = true;
         <Separator className='my-4' />
       </div>
 
+      <div>
+        <Alert text={translation.data['alert.warning']} />
+      </div>
+
+      <div class='my-4 flex flex-col gap-2'>
+        <Select id='select-audio-input' label={translation.data['select.audioInput.label']} />
+        <Select id='select-audio-output' label={translation.data['select.audioOutput.label']} />
+        <div class='px-2'>
+          <Checkbox
+            id='checkbox-audio-output-muted'
+            label={translation.data['checkbox.audioOutputMuted.label']}
+          />
+        </div>
+        <Select id='select-video-source' label={translation.data['select.videoSource.label']} />
+      </div>
       <div class='my-2'>
         <div class='flex flex-wrap gap-2' id='resolution'>
           <Badge id='qvga'>QVGA</Badge>
