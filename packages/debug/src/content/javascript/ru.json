@@ -14,6 +14,6 @@
   "card.selectSources.title": "выбор устройств",
   "card.selectSources.description": "Выберите источники и выходы",
 
-  "card.mediaPanel.title": "select sources",
-  "card.mediaPanel.description": "Select sources & outputs"
+  "card.mediaPanel.title": "медиа панель",
+  "card.mediaPanel.description": "Играйте с метаданными"
 }

@@ -13,7 +13,7 @@ export interface GetMediaStreamConstraintsParams {
 
 export const getMediaStreamConstraints = async ({
   constraints: { video = true, audio = false, ...otherConstraints } = {},
-  options: { muted = true, ...options } = {}
+  options: { muted = false, ...options } = {}
 }: GetMediaStreamConstraintsParams = {}) => {
   let videoConstraints: MediaStreamConstraints['video'];
   let audioConstraints: MediaStreamConstraints['audio'];
@@ -35,7 +35,7 @@ export const getMediaStreamConstraints = async ({
 
   const finalConstraints: MediaStreamConstraints = {
     ...otherConstraints,
-    ...((!muted || audio) && {
+    ...(!muted && {
       audio: typeof audioConstraints !== 'undefined' ? audioConstraints : true
     }),
     video: typeof videoConstraints !== 'undefined' ? videoConstraints : true

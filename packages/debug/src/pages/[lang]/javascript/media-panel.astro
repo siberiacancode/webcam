@@ -366,12 +366,10 @@ export const prerender = true;
       <div class='my-4 flex flex-col gap-2'>
         <Select id='select-audio-input' label={translation.data['select.audioInput.label']} />
         <Select id='select-audio-output' label={translation.data['select.audioOutput.label']} />
-        <div class='px-2'>
-          <Checkbox
-            id='checkbox-audio-output-muted'
-            label={translation.data['checkbox.audioOutputMuted.label']}
-          />
-        </div>
+        <Checkbox
+          id='checkbox-audio-output-muted'
+          label={translation.data['checkbox.audioOutputMuted.label']}
+        />
         <Select id='select-video-source' label={translation.data['select.videoSource.label']} />
       </div>
       <div class='my-2'>
