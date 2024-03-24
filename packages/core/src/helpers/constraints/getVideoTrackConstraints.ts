@@ -7,7 +7,7 @@ export type VideoResolutionSize = {
 };
 
 export type CameraResolutionType = 'HD' | 'FHD' | 'QHD' | 'UHD';
-export type CameraResolutionMode = keyof ConstrainULongRange;
+export type CameraResolutionMode = 'min' | 'max' | 'ideal' | 'exact';
 
 export const VIDEO_RESOLUTION_SIZE: Record<CameraResolutionType, VideoResolutionSize> = {
   UHD: {
@@ -35,6 +35,12 @@ export interface VideoTrackConstraintsOptions {
   frontCamera?: boolean;
 }
 
+/**
+ * Generates and returns video track constraints by passed options
+ *
+ * @param {GetMediaStreamConstraintsParams} options - options for constraints generating
+ * @return {Promise<MediaStreamConstraints>} video track constraints
+ */
 export const getVideoTrackConstraints = async (
   externalConstraints: MediaTrackConstraints,
   {
