@@ -4,7 +4,7 @@ Ultimate tool for working with media stream
 
 ## 🔗 References
 
-- [**DEMO**](https://react-webcam-ultimate.vercel.app/en/javascript)
+- [**Demo**](https://react-webcam-ultimate.vercel.app/en/javascript)
 - [**Web API**](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 - [**Browser Сompatibility**](https://caniuse.com/stream)
 
@@ -110,7 +110,7 @@ Generates and returns video track constraints by passed options.
 
 Returns main camera [info](https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo) in accordance with the default or passed parameters.
 
-**NOTE:** Requires [browser support](https://caniuse.com/mdn-api_mediadevices_enumeratedevices) for [Navigator.MediaDevices.enumerateDevices](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices) to work.
+**NOTE:** Requires [browser support](https://caniuse.com/mdn-api_mediadevices_enumeratedevices) for Navigator.MediaDevices.[enumerateDevices](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices) to work.
 
 - `params?` {GetMainCameraParams} - Pattern for searching the main camera device info by its label
   - {RegExp} - General default pattern

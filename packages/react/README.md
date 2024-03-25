@@ -4,7 +4,7 @@ Ultimate tool for working with media stream in your React application
 
 ## 🔗 References
 
-- [**DEMO**](https://react-webcam-ultimate.vercel.app/en/react)
+- [**Demo**](https://react-webcam-ultimate.vercel.app/en/react)
 - [**Web API**](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 - [**Browser Сompatibility**](https://caniuse.com/stream)
 
@@ -88,12 +88,9 @@ The component also supports many properties for more specific work:
 | onStreamStart             | function |              | callback for when component starts a media stream                                       |
 | onStreamStop              | function |              | callback for when component stops a media stream                                        |
 | onStreamError             | function |              | callback for when component can't receive a media stream                                |
-| audioConstraints          | object   |              |
-[MediaStreamConstraints['audio']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)                                         |
-| videoConstraints          | object   |              |
-[MediaStreamConstraints['video']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)                                         |
-| stream                    | object   |              |
-external [MediaStream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) (turns off internal media stream handling logic)             |
+| audioConstraints          | object   ||[MediaStreamConstraints['audio']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)|
+| videoConstraints          | object   ||[MediaStreamConstraints['video']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)|
+| stream                    | object   ||external [MediaStream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) (turns off internal media stream handling logic)|
 
 
 
