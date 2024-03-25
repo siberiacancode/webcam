@@ -6,7 +6,7 @@ export interface GetVideoFrameCanvasOptions {
 }
 
 /**
- * Returns a canvas of the current video stream frame in accordance with the passed options
+ * Returns a canvas with a drawn image of the current video stream frame in accordance with the passed options
  *
  * @param {HTMLVideoElement} source - video element instance with provided media stream
  * @param {GetVideoFrameCanvasOptions} options - options for getting video frame canvas

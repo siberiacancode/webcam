@@ -1,10 +1,10 @@
 import type { ComponentPropsWithoutRef, FC, ReactNode, RefObject, SyntheticEvent } from 'react';
 import React, { useEffect, useRef } from 'react';
+import type { GetVideoFrameCanvasOptions, GetWebcamSnapshotOptions } from '@webcam/core';
+import { getVideoFrameCanvas, getWebcamSnapshot } from '@webcam/core';
 
 import type { UseMediaStreamParams } from '@/utils/hooks';
 
-import type { GetVideoFrameCanvasOptions, GetWebcamSnapshotOptions } from './helpers';
-import { getVideoFrameCanvas, getWebcamSnapshot } from './helpers';
 import { useWebcam } from './hooks';
 
 type VideoElementProps = Omit<ComponentPropsWithoutRef<'video'>, 'children'>;

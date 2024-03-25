@@ -7,7 +7,7 @@ export type VideoResolutionSize = {
 };
 
 export type CameraResolutionType = 'HD' | 'FHD' | 'QHD' | 'UHD';
-export type CameraResolutionMode = 'min' | 'max' | 'ideal' | 'exact';
+export type CameraResolutionMode = keyof ConstrainULongRange;
 
 export const VIDEO_RESOLUTION_SIZE: Record<CameraResolutionType, VideoResolutionSize> = {
   UHD: {

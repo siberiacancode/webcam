@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules"],
-  "include": ["declarations.d.ts", "**/*.ts", "../react/src/utils/helpers/animationFrame.ts"],
+  "include": ["declarations.d.ts", "**/*.ts"],
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],

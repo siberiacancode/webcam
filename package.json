@@ -38,9 +38,8 @@
     "deploy": "turbo run deploy",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "unit-test": "turbo run unit-test",
     "pretty": "turbo run pretty",
-    "lint-staged": "turbo run lint-staged",
+    "unit-test": "turbo run unit-test",
     "change": "beachball change --no-commit",
     "release": "beachball publish --no-bump-deps --bump-deps=false",
     "prepare": "husky install && turbo telemetry disable"
