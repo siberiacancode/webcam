@@ -2,13 +2,13 @@
 
 Ultimate tool for working with media stream in your React application
 
-## 🔗 References
+## References
 
 - [**Demo**](https://react-webcam-ultimate.vercel.app/en/react)
 - [**Web API**](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 - [**Browser Сompatibility**](https://caniuse.com/stream)
 
-## 🌌 Installation
+## Installation
 
 Install with [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
@@ -20,9 +20,9 @@ yarn add @webcam/react
 
 ## 🦉 Philosophy
 
-**Webcam React** is a package that includes ready-made solutions for common cases of setting up and using a media stream from your webcam using Web API. Our goal is to create simple and flexible tools that allow users to create, test and maintain their products.
+📸 **Webcam React** is a package that includes ready-made solutions for common cases of setting up and using a media stream from your webcam using Web API. Our goal is to create simple and flexible tools that allow users to create, test and maintain their products.
 
-## 🍽️ Features
+## Features
 
 - TypeScript support out of the box - full typed package
 - Webcam Snapshots - creating an image from a video stream
@@ -31,7 +31,7 @@ yarn add @webcam/react
 - Legacy API Support - outdated implementations for each browser
 - React Apps Support - component and hooks for working with playing a media stream
 
-## 🚀 Usage
+## Usage
 
 ```jsx
 import React from 'react';
@@ -64,7 +64,7 @@ const YourComponent = () => (
 );
 ```
 
-## 🎭 API
+## API
 
 You can pass any supported [properties](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video) to the underlying video tag (eg `autoPlay`, `className`, etc). However, for convenience, the component uses its own values for these properties, but you can reassign them without any problems:
 | **Prop**                  | **Type** | **Default**  | **Note**                                                                                |

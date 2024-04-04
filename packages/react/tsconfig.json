@@ -1,6 +1,12 @@
 {
   "exclude": ["node_modules"],
-  "include": ["declarations.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "declarations.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ],
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -11,7 +17,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "resolveJsonModule": true,
     "noEmit": true,

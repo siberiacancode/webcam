@@ -2,13 +2,13 @@
 
 Ultimate tool for working with media stream
 
-## 🔗 References
+## References
 
 - [**Demo**](https://react-webcam-ultimate.vercel.app/en/javascript)
 - [**Web API**](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 - [**Browser Сompatibility**](https://caniuse.com/stream)
 
-## 🌌 Installation
+## Installation
 
 Install with [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
@@ -20,9 +20,9 @@ yarn add @webcam/core
 
 ## 🦉 Philosophy
 
-**Webcam Core** is a package that includes ready-made solutions for common cases of setting up and using a media stream from your webcam using Web API. Our goal is to create simple and flexible tools that allow users to create, test and maintain their products.
+📸 **Webcam Core** is a package that includes ready-made solutions for common cases of setting up and using a media stream from your webcam using Web API. Our goal is to create simple and flexible tools that allow users to create, test and maintain their products.
 
-## 🍽️ Features
+## Features
 
 - TypeScript support out of the box - full typed package
 - Webcam Snapshots - creating an image from a video stream
@@ -30,7 +30,7 @@ yarn add @webcam/core
 - Advanced Video Settings - selecting camera type and resolution
 - Legacy API Support - outdated implementations for each browser
 
-## 🚀 Usage
+## Usage
 
 ```javascript
 import {
@@ -65,7 +65,7 @@ const stopStream = () => stopMediaStream(runningStream);
 requestStream({ mainCamera: true }, { width: 1920, height: 1080 });
 ```
 
-## 🎭 API
+## API
 
 ### getUserMedia
 

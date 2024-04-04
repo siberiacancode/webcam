@@ -1,6 +1,8 @@
+import type { Decorator, Parameters } from '@storybook/react';
+import type { IndexEntry } from '@storybook/types';
 import React from 'react';
 
-export const parameters = {
+export const parameters: Parameters = {
   viewMode: 'docs',
   previewTabs: {
     canvas: {
@@ -13,8 +15,8 @@ export const parameters = {
     }
   },
   options: {
-    storySort: (a, b) =>
-      a.kind === b.kind ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true })
+    storySort: (a: IndexEntry, b: IndexEntry) =>
+      a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true })
   },
   viewport: {
     viewports: {
@@ -50,7 +52,7 @@ export const parameters = {
   }
 };
 
-export const decorators = [
+export const decorators: Decorator[] = [
   (Story) => (
     <div
       style={{

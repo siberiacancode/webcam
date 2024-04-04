@@ -1,7 +1,55 @@
 {
   "name": "webcam",
+  "description": "Ultimate tools for working with media stream from you webcam",
   "license": "MIT",
-  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "SIBERIA CAN CODE 🧊",
+    "url": "https://github.com/siberiacancode"
+  },
+  "contributors": [
+    {
+      "name": "Mironychev Michael",
+      "url": "https://github.com/michael-mir"
+    },
+    {
+      "name": "Dmitry Babin",
+      "url": "https://github.com/debabin"
+    },
+    {
+      "name": "Sergey Kryavkin",
+      "url": "https://github.com/RiceWithMeat"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siberiacancode/webcam.git"
+  },
+  "homepage": "https://github.com/siberiacancode/webcam",
+  "bugs": "https://github.com/siberiacancode/webcam/issues",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "deploy": "turbo run deploy",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "pretty": "turbo run pretty",
+    "unit-test": "turbo run unit-test",
+    "change": "beachball change --no-commit",
+    "release": "beachball publish --yes",
+    "prepare": "husky install && turbo telemetry disable && yarn build"
+  },
+  "devDependencies": {
+    "@siberiacancode/prettier": "^1.1.0",
+    "beachball": "^2.41.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.1"
+  },
   "keywords": [
     "media",
     "video",
@@ -17,39 +65,5 @@
     "getUserMedia",
     "react-webcam",
     "webcam-canvas"
-  ],
-  "private": true,
-  "author": {
-    "name": "SIBERIA CAN CODE 🧊",
-    "url": "https://github.com/siberiacancode"
-  },
-  "bugs": {
-    "url": "https://github.com/siberiacancode/react-webcam-ultimate/issues"
-  },
-  "repository": {
-    "url": "https://github.com/siberiacancode/react-webcam-ultimate.git"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "deploy": "turbo run deploy",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
-    "pretty": "turbo run pretty",
-    "unit-test": "turbo run unit-test",
-    "change": "beachball change --no-commit",
-    "release": "beachball publish --no-bump-deps --bump-deps=false",
-    "prepare": "husky install && turbo telemetry disable"
-  },
-  "devDependencies": {
-    "@siberiacancode/prettier": "^1.1.0",
-    "beachball": "^2.39.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5",
-    "turbo": "^1.12.5"
-  }
+  ]
 }

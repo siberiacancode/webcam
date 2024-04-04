@@ -2,6 +2,7 @@
   "name": "@webcam/core",
   "version": "0.0.0",
   "description": "Ultimate tool for working with media stream",
+  "license": "MIT",
   "author": {
     "name": "SIBERIA CAN CODE 🧊",
     "url": "https://github.com/siberiacancode"
@@ -20,41 +21,24 @@
       "url": "https://github.com/RiceWithMeat"
     }
   ],
-  "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
-  "keywords": [
-    "media",
-    "video",
-    "canvas",
-    "camera",
-    "webcam",
-    "stream",
-    "userMedia",
-    "navigator",
-    "screenshot",
-    "constraints",
-    "getUserMedia",
-    "webcam-canvas"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "homepage": "https://github.com/siberiacancode/react-webcam-ultimate",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/siberiacancode/react-webcam-ultimate.git"
-  },
-  "bugs": {
-    "url": "https://github.com/siberiacancode/react-webcam-ultimate/issues"
-  },
-  "files": [
-    "dist/**/*"
-  ],
   "engines": {
     "node": ">=14"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siberiacancode/webcam.git"
+  },
+  "homepage": "https://github.com/siberiacancode/webcam",
+  "bugs": "https://github.com/siberiacancode/webcam/issues",
+  "files": [
+    "dist/**/*"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c --bundleConfigAsCjs",
     "lint": "eslint . --ext ts --no-error-on-unmatched-pattern --fix",
@@ -75,9 +59,21 @@
     "@siberiacancode/prettier": "^1.1.0",
     "@types/node": "^20.11.19",
     "eslint": "^8.56.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
     "shx": "^0.3.4",
     "typescript": "^5.3.3"
-  }
+  },
+  "keywords": [
+    "media",
+    "video",
+    "canvas",
+    "camera",
+    "webcam",
+    "stream",
+    "userMedia",
+    "navigator",
+    "screenshot",
+    "constraints",
+    "getUserMedia",
+    "webcam-canvas"
+  ]
 }
