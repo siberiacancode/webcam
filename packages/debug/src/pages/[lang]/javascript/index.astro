@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: CollectionEntry<'javascript'>;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/javascript`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
+
+export const prerender = true;
+---
+
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript')
+  }}
+>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: `/${translation.id}`,
+          children: 'Home'
+        },
+        {
+          children: 'Javascript'
+        }
+      ]}
+    />
+
+    <div class='grid gap-6 md:gap-8'>
+      <div class='flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-8'>
+        <div class='flex flex-col gap-1'>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+          <p class='text-gray-500 dark:text-gray-400' set:html={translation.data.description} />
+          <Separator className='my-4' />
+        </div>
+      </div>
+
+      <h2 class='text-xl font-bold tracking-tight'>getUserMedia()</h2>
+      <div class='grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
+        <section>
+          <a href={`/${translation.id}/javascript/basic`}>
+            <Card className='transition-transform duration-150 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.basic.title']}</CardTitle>
+                <CardDescription>{translation.data['card.basic.description']}</CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/snapshot`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.snapshot.title']}</CardTitle>
+                <CardDescription>{translation.data['card.snapshot.description']}</CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/select-resolution`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.selectResolution.title']}</CardTitle>
+                <CardDescription>
+                  {translation.data['card.selectResolution.description']}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/select-sources`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.selectSources.title']}</CardTitle>
+                <CardDescription>
+                  {translation.data['card.selectSources.description']}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+        <section>
+          <a href={`/${translation.id}/javascript/media-panel`}>
+            <Card className='transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader>
+                <CardTitle>{translation.data['card.mediaPanel.title']}</CardTitle>
+                <CardDescription>
+                  {translation.data['card.mediaPanel.description']}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
+        </section>
+      </div>
+    </div>
+  </section>
+</Layout>

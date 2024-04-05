@@ -1,0 +1,19 @@
+{
+  "title": "Javascript webcam samples",
+  "description": "📸 This is a collection of small samples demonstrating various parts of the webcam package. The code for all samples are available in the <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a> repository.",
+
+  "card.basic.title": "basic",
+  "card.basic.description": "Basic getUserMedia demo",
+
+  "card.snapshot.title": "snapshot",
+  "card.snapshot.description": "Use getUserMedia with canvas",
+
+  "card.selectResolution.title": "select resolution",
+  "card.selectResolution.description": "Choose camera resolution",
+
+  "card.selectSources.title": "select sources",
+  "card.selectSources.description": "Select sources & outputs",
+
+  "card.mediaPanel.title": "media panel",
+  "card.mediaPanel.description": "Play with media data"
+}

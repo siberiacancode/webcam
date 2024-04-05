@@ -1,0 +1,18 @@
+{
+  "title": "Select sources & outputs",
+  "description": "Get available audio, video sources and audio output devices from mediaDevices.enumerateDevices().",
+
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.selectSources": "Select sources & outputs",
+
+  "alert.warning": "without permission, the browser will restrict the available devices to at most one pertype",
+
+  "select.audioInput.label": "Audio input source:",
+  "select.audioOutput.label": "Audio output destination:",
+  "select.videoSource.label": "Video source",
+
+  "checkbox.audioOutputMuted.label": "audio output muted",
+
+  "link.viewSource": "View source on GitHub"
+}

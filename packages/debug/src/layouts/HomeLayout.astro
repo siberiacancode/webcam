@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+
+import { ModeToggle } from '@/components/ModeToggle';
+import { LanguageSelect } from '@/components/LanguageSelect';
+import { Toaster } from '@/components/ui/sonner';
+
+import type { Props as SeoProps } from './Seo.astro';
+import Seo from './Seo.astro';
+
+import '@/assets/globals.css';
+
+interface Props extends SeoProps {
+  language: 'ru' | 'en';
+}
+
+const { language, seo, title, description } = Astro.props;
+
+const layoutCollection = await getCollection('layout');
+const translations = layoutCollection.find((translation) => translation.id === language)!;
+---
+
+<script is:inline>
+  const getThemePreference = () => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+  const isDark = getThemePreference() === 'dark';
+  document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+
+  if (typeof localStorage !== 'undefined') {
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>
+
+<html lang={language}>
+  <head>
+    <Seo title={title} description={description} seo={seo} />
+  </head>
+  <body>
+    <div class='container flex h-screen flex-col justify-between px-4'>
+      <div>
+        <slot />
+        <Toaster client:load duration={10000} />
+      </div>
+      <footer
+        class='mb-5 flex flex-col-reverse justify-center gap-4 sm:flex-row sm:justify-between'
+      >
+        <div class='text-balance text-center text-sm leading-loose text-muted-foreground'>
+          <span set:html={translations.data['link.builtBy']} />
+          <span set:html={translations.data['link.sourceCode']} />
+        </div>
+        <div class='flex justify-center gap-4'>
+          <LanguageSelect value={language} client:load />
+          <ModeToggle client:load />
+        </div>
+      </footer>
+    </div>
+    <legend class='underline'></legend>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "title": "Выберите источники и выходы",
+  "description": "Получите доступные источники аудио, видео и устройства вывода звука из mediaDevices.enumerateDevices()",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.selectSources": "Выберите источники и выходы",
+
+  "alert.warning": "без разрешения браузер ограничит доступные устройства не более чем одним устройством каждого типа",
+
+  "select.audioInput.label": "Источник аудиовхода:",
+  "select.audioOutput.label": "Вывод аудио:",
+  "select.videoSource.label": "Источник видео",
+
+  "checkbox.audioOutputMuted.label": "вывод звука заглушить",
+
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}

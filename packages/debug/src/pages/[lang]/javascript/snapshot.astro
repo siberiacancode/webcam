@@ -1,0 +1,142 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: any;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~snapshot');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
+
+export const prerender = true;
+---
+
+<script>
+  import { toast } from 'sonner';
+
+  import { getMediaStream, getVideoFrameCanvas } from '@webcam/react';
+
+  const buttonTakeSnapshot = document.getElementById('button-take-snapshot')! as HTMLButtonElement;
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  const snapshot = document.getElementById('snapshot')! as HTMLDivElement;
+
+  const constraints = {
+    audio: false,
+    video: true
+  };
+
+  buttonTakeSnapshot.addEventListener('click', () => {
+    try {
+      const canvas = getVideoFrameCanvas(video);
+      if (!canvas) {
+        return toast.error('getVideoFrameCanvas canvas error');
+      }
+
+      toast.success(
+        `Taked snapshot w: ${canvas.width} h: ${canvas.height} on video device: ${video.innerHTML}`
+      );
+      snapshot.innerHTML = '';
+      snapshot.appendChild(canvas);
+    } catch (error: any) {
+      toast.error(`getVideoFrameCanvas error: ${error}`, error);
+    }
+  });
+
+  try {
+    const stream = await getMediaStream({ constraints });
+
+    // @ts-ignore
+    window.stream = stream;
+    video.srcObject = stream;
+
+    const videoTracks = stream.getVideoTracks();
+
+    const [videoDevice] = videoTracks;
+    console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
+    toast.success(`Using video device: ${videoDevice.label}`);
+    video.innerHTML = videoDevice.label;
+
+    buttonTakeSnapshot.disabled = false;
+  } catch (error: any) {
+    if (error?.name === 'NotAllowedError') {
+      toast.error(
+        'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+      );
+    } else toast.error(`getUserMedia error: ${error.name}`, error);
+  }
+</script>
+
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/select-snapshot')
+  }}
+>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
+        },
+        {
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
+        },
+        {
+          children: translation.data['breadcrumbs.snapshot']
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex w-full flex-col justify-start gap-1'>
+        <div class='flex flex-col md:flex-row'>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            {translation.data['link.viewSource']}
+          </a>
+        </div>
+
+        <p class='text-gray-500 dark:text-gray-400'>
+          {translation.data.description}
+        </p>
+
+        <Separator className='my-4' />
+      </div>
+
+      <div class='my-2'>
+        <Button disabled id='button-take-snapshot'>
+          {translation.data['button.takeSnapshot']}
+        </Button>
+      </div>
+
+      <video id='camera' autoplay playsinline></video>
+      <div id='snapshot'></div>
+    </div>
+  </section>
+</Layout>

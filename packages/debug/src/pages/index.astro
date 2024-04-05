@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import HomeLayout from '@/layouts/HomeLayout.astro';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+
+import react from '@/assets/images/react-original.svg';
+import javascript from '@/assets/images/javascript-original.svg';
+
+interface Props {
+  translation: CollectionEntry<'home'>;
+}
+
+const translations = await getCollection('home');
+
+const translation = translations.find((translation) => translation.id === 'en')!;
+
+export const prerender = true;
+---
+
+<HomeLayout
+  title={translation.data.title}
+  description={translation.data.description}
+  language={translation.id}
+>
+  <div class='mx-auto w-full px-4 py-32 md:w-3/5'>
+    <div class='grid gap-6 md:gap-8'>
+      <div class='flex flex-col items-center justify-center gap-2'>
+        <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+        <p
+          set:html={translation.data.description}
+          class='text-center text-gray-500 dark:text-gray-400'
+        />
+        <Separator className='my-4' />
+      </div>
+
+      <div class='mx-auto flex flex-col justify-center gap-4'>
+        <sections>
+          <a href={`/${translation.id}/javascript`}>
+            <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row items-center gap-3'>
+                <Image src={javascript} class='rounded' alt='javascript' width='40' height='40' />
+                <CardTitle>javascript</CardTitle>
+              </CardHeader>
+            </Card>
+          </a>
+        </sections>
+        <sections>
+          <a href={`/${translation.id}/react`}>
+            <Card className='px-5 transition-transform duration-300 hover:translate-y-[-5px]'>
+              <CardHeader className='flex flex-row items-center gap-3'>
+                <Image src={react} alt='react' width='40' height='40' />
+                <CardTitle>react</CardTitle>
+              </CardHeader>
+            </Card>
+          </a>
+        </sections>
+      </div>
+    </div>
+  </div>
+</HomeLayout>

@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+
+import { ModeToggle } from '@/components/ModeToggle';
+import { FrameworkSelect } from '@/components/FrameworkSelect';
+import { LanguageSelect } from '@/components/LanguageSelect';
+import { Toaster } from '@/components/ui/sonner';
+
+import type { Props as SeoProps } from './Seo.astro';
+import Seo from './Seo.astro';
+
+import '@/assets/globals.css';
+
+interface Props extends SeoProps {
+  framework: 'javascript' | 'react';
+  language: 'ru' | 'en';
+}
+
+const { framework, language, seo, title, description } = Astro.props;
+
+const layoutCollection = await getCollection('layout');
+const translations = layoutCollection.find((translation) => translation.id === language)!;
+---
+
+<script is:inline>
+  const getThemePreference = () => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+  const isDark = getThemePreference() === 'dark';
+  document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+
+  if (typeof localStorage !== 'undefined') {
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>
+
+<html lang={language}>
+  <head>
+    <Seo title={title} description={description} seo={seo} />
+  </head>
+  <body>
+    <div class='container flex h-screen flex-col justify-between px-4'>
+      <div>
+        <header class='flex items-center justify-between space-y-2 py-4 sm:space-y-0 md:h-16'>
+          <h1 class='text-lg font-semibold'>
+            <a href='/'>{translations.data.title}</a>
+          </h1>
+          <div class='flex gap-3'>
+            <FrameworkSelect value={framework} client:load />
+            <LanguageSelect value={language} client:load />
+            <ModeToggle client:load />
+          </div>
+        </header>
+        <slot />
+        <Toaster client:load duration={10000} />
+      </div>
+      <footer class='mb-5 flex flex-col items-start'>
+        <p
+          class='text-balance text-center text-sm leading-loose text-muted-foreground md:text-left'
+        >
+          <span set:html={translations.data['link.builtBy']} />
+          <span set:html={translations.data['link.sourceCode']} />
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

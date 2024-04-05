@@ -1,0 +1,121 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import SpeedInsights from '@vercel/speed-insights/astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  seo?: {
+    keywords?: string[];
+    canonical?: string[];
+    charset?: string;
+    languageAlternates?: { href: string; hreflang: string }[];
+    meta?: Partial<HTMLAttributes<'meta'>>[];
+  };
+}
+
+const defaultSeo = {
+  keywords: [
+    'media',
+    'video',
+    'react',
+    'canvas',
+    'camera',
+    'webcam',
+    'stream',
+    'userMedia',
+    'navigator',
+    'screenshot',
+    'constraints',
+    'getUserMedia',
+    'react-webcam',
+    'webcam-canvas'
+  ],
+  charset: 'UTF-8'
+};
+const { seo, title, description } = Astro.props;
+---
+
+<meta charset={seo?.charset ?? defaultSeo.charset} />
+<title set:html={title} />
+<meta name='description' content={description} />
+<meta name='viewport' content='width=device-width' />
+<link rel='shortcut icon' href='/favicon.ico' />
+<link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+<link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+<link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
+<link rel='manifest' href='/site.webmanifest' />
+<meta name='generator' content={Astro.generator} />
+<meta name='keywords' content={seo?.keywords?.join(', ') ?? defaultSeo.keywords?.join(', ')} />
+{seo?.meta?.map((attributes) => <meta {...attributes} />)}
+{
+  seo?.languageAlternates?.map((alternate) => (
+    <link rel='alternate' hreflang={alternate.hreflang} href={alternate.href} />
+  ))
+}
+<meta
+  property='og:image'
+  content='https://opengraph.githubassets.com/897dd391ad26f4fcc8ee1e4060713fe782fef80dff3427307adc705de645e229/siberiacancode/react-webcam-ultimate'
+/>
+<meta
+  property='og:image:alt'
+  content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+/>
+<meta property='og:image:width' content='1200' /><meta property='og:image:height' content='600' />
+<meta property='og:site_name' content='GitHub' /><meta property='og:type' content='object' />
+<meta
+  property='og:title'
+  content='siberiacancode/react-webcam-ultimate: 📸 ultimate tool for working with media stream and displaying it in your react application'
+/>
+<meta property='og:url' content='https://github.com/siberiacancode/react-webcam-ultimate' />
+<meta
+  property='og:description'
+  content='📸 ultimate tool for working with media stream and displaying it in your react application - siberiacancode/react-webcam-ultimate'
+/>
+
+<!-- Google tag (gtag.js) -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=G-NV2PNWMNXZ'></script>
+<script>
+  // @ts-ignore
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    // @ts-ignore
+    dataLayer.push(arguments);
+  }
+  // @ts-ignore
+  gtag('js', new Date());
+  // @ts-ignore
+  gtag('config', 'G-NV2PNWMNXZ');
+</script>
+
+<!-- Google Tag Manager -->
+<script>
+  (function (w, d, s, l, i) {
+    // @ts-ignore
+    w[l] = w[l] || [];
+    // @ts-ignore
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != 'dataLayer' ? '&l=' + l : '';
+    // @ts-ignore
+    j.async = true;
+    // @ts-ignore
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    // @ts-ignore
+    f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', 'GTM-WXXKWV48');
+</script>
+<!-- End Google Tag Manager -->
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+  <iframe
+    src='https://www.googletagmanager.com/ns.html?id=GTM-WXXKWV48'
+    height='0'
+    width='0'
+    style='display:none;visibility:hidden'
+  >
+  </iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+<SpeedInsights />

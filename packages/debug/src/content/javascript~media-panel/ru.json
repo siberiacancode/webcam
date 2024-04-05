@@ -1,0 +1,21 @@
+{
+  "title": "Играйте с метаданными",
+  "description": "Получите доступные аудио-, видеоисточники и устройства вывода звука с соответствующим разрешением.",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.mediaPanel": "Играйте с метаданными",
+
+  "alert.warning": "без разрешения браузер ограничит доступные устройства не более чем одним устройством каждого типа",
+
+  "select.audioInput.label": "Источник аудиовхода:",
+  "select.audioOutput.label": "Вывод аудио:",
+  "select.videoSource.label": "Источник видео",
+
+  "checkbox.audioOutputMuted.label": "вывод звука заглушить",
+  "checkbox.lockAspectRatio.label": "lock aspect ratio",
+
+  "slider.width.label": "width",
+
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}

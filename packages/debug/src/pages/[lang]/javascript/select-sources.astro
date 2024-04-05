@@ -1,0 +1,234 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import Select from '@/components/Select.astro';
+import Alert from '@/components/Alert.astro';
+import Checkbox from '@/components/Checkbox.astro';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: any;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~select-sources');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
+
+export const prerender = true;
+---
+
+<script>
+  import { toast } from 'sonner';
+
+  import { getMediaStream, stopMediaStream, getDevices } from '@webcam/react';
+
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  const checkboxAudioOutputMuted = document.getElementById(
+    'checkbox-audio-output-muted'
+  )! as HTMLInputElement;
+  const [audioInputSelect, audioOutputSelect, videoSelect] =
+    document.getElementsByTagName('select')!;
+  const selectors = [audioInputSelect, audioOutputSelect, videoSelect];
+
+  checkboxAudioOutputMuted.checked = true;
+  audioOutputSelect.disabled = !('sinkId' in HTMLMediaElement.prototype);
+
+  const startStream = async (stream: MediaStream) => {
+    try {
+      // @ts-ignore
+      window.stream = stream;
+      video.srcObject = stream;
+
+      const videoTracks = stream.getVideoTracks();
+      const [videoDevice] = videoTracks;
+
+      console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
+      toast.success(`Using video device: ${videoDevice.label}`);
+
+      const captions = document.createElement('captions');
+      captions.innerHTML = videoDevice.label;
+      video.appendChild(captions);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  const gotDevices = async () => {
+    const devices = await getDevices();
+    const values = selectors.map((select) => select.value);
+
+    selectors.forEach((select) => {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    });
+
+    devices.forEach((device) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+
+      if (device.kind === 'audioinput') {
+        option.text = device.label || `microphone ${audioInputSelect.length + 1}`;
+        audioInputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'audiooutput') {
+        option.text = device.label || `speaker ${audioOutputSelect.length + 1}`;
+        audioOutputSelect.appendChild(option);
+      }
+
+      if (device.kind === 'videoinput') {
+        option.text = device.label || `camera ${videoSelect.length + 1}`;
+        videoSelect.appendChild(option);
+      }
+
+      if (
+        device.kind !== 'audioinput' &&
+        device.kind !== 'audiooutput' &&
+        device.kind !== 'videoinput'
+      ) {
+        console.log('Some other kind of source/device: ', device);
+      }
+    });
+
+    selectors.forEach((select, index) => {
+      if (
+        Array.prototype.slice
+          .call(select.childNodes)
+          .some((option) => option.value === values[index])
+      ) {
+        select.value = values[index];
+      }
+    });
+  };
+
+  const changeAudioDestination = async () => {
+    const audioOutputDeviceId = audioOutputSelect.value;
+
+    // @ts-ignore
+    if (video.sinkId === 'undefined') {
+      toast.error('Browser does not support output device selection');
+      return;
+    }
+
+    try {
+      // @ts-ignore
+      await video.setSinkId(audioOutputDeviceId);
+      toast.success(`Success, audio output device attached: ${audioOutputDeviceId}`);
+    } catch (error: any) {
+      if (error.name === 'SecurityError') {
+        toast.error(`You need to use HTTPS for selecting audio output device: ${error}`);
+      }
+
+      toast.error(`changeAudioDestination error: ${error}`, error);
+      console.error(error);
+      audioOutputSelect.selectedIndex = 0;
+    }
+  };
+
+  let stream: MediaStream | undefined;
+  const start = async () => {
+    if (stream) {
+      stopMediaStream(stream);
+    }
+    const audioInputDeviceId = audioInputSelect.value;
+    const videoDeviceId = videoSelect.value;
+    const constraints = {
+      ...(!checkboxAudioOutputMuted.checked && {
+        audio: {
+          deviceId: audioInputDeviceId ? { exact: audioInputDeviceId } : undefined
+        }
+      }),
+      video: { deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined }
+    };
+
+    await gotDevices();
+    stream = await getMediaStream({ constraints });
+    await startStream(stream);
+  };
+
+  start();
+
+  checkboxAudioOutputMuted.onchange = start;
+  audioOutputSelect.onchange = changeAudioDestination;
+  audioInputSelect.onchange = start;
+  videoSelect.onchange = start;
+</script>
+
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/select-sources')
+  }}
+>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
+        },
+        {
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
+        },
+        {
+          children: translation.data['breadcrumbs.selectSources']
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex w-full flex-col justify-start gap-1'>
+        <div class='flex flex-col md:flex-row'>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            {translation.data['link.viewSource']}
+          </a>
+        </div>
+
+        <p class='text-gray-500 dark:text-gray-400'>
+          {translation.data.description}
+        </p>
+
+        <Separator className='my-4' />
+      </div>
+
+      <div>
+        <Alert text={translation.data['alert.warning']} />
+      </div>
+
+      <div class='my-4 flex flex-col gap-2'>
+        <Select id='select-audio-input' label={translation.data['select.audioInput.label']} />
+        <Select id='select-audio-output' label={translation.data['select.audioOutput.label']} />
+        <Checkbox
+          id='checkbox-audio-output-muted'
+          label={translation.data['checkbox.audioOutputMuted.label']}
+        />
+        <Select id='select-video-source' label={translation.data['select.videoSource.label']} />
+      </div>
+      <video id='camera' autoplay playsinline></video>
+    </div>
+  </section>
+</Layout>

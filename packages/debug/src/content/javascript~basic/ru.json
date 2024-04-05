@@ -1,0 +1,11 @@
+{
+  "title": "Базовая демонстрация getUserMedia",
+  "description": "Отображение видеопотока из getUserMedia() в теге видео.",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.basic": "Базовая демонстрация getUserMedia",
+
+  "button.openCamera": "Открыть камеру",
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}

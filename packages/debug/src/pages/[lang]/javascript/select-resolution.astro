@@ -1,0 +1,255 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '@/layouts/Layout.astro';
+import { Breadcrumbs } from '@/layouts/Breadcrumbs';
+import { buttonVariants } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import Checkbox from '@/components/Checkbox.astro';
+
+import { generateAlternate } from '@/lib/utils';
+
+interface Props {
+  translation: any;
+}
+
+export const getStaticPaths = async () => {
+  const translations = await getCollection('javascript~select-resolution');
+
+  const paths = translations.map((translation) => ({
+    params: {
+      lang: translation.id,
+      slug: `/${translation.id}/${translation.collection.replaceAll('~', '/')}`
+    },
+    props: { translation }
+  }));
+
+  return paths;
+};
+
+const { translation } = Astro.props;
+
+export const prerender = true;
+---
+
+<script>
+  import { toast } from 'sonner';
+
+  import { badgeVariants } from '@/components/ui/badge';
+  import { RESOLUTIONS } from '@/utils/constants';
+  import { getMediaStream, stopMediaStream, applyMediaStreamConstraints } from '@webcam/react';
+
+  let selectedId: keyof typeof RESOLUTIONS = 'qvga';
+
+  const checkboxLockAspectRatio = document.getElementById(
+    'checkbox-lock-aspect-ratio'
+  )! as HTMLInputElement;
+  const inputRangeResolution = document.getElementById(
+    'input-range-resolution'
+  )! as HTMLInputElement;
+  const inputRangeResolutionLabel = document.getElementById(
+    'input-range-resolution-label'
+  )! as HTMLSpanElement;
+
+  const startStream = (stream: MediaStream) => {
+    try {
+      // @ts-ignore
+      window.stream = stream;
+      video.srcObject = stream;
+
+      const videoTracks = stream.getVideoTracks();
+
+      const [videoDevice] = videoTracks;
+      console.log('Got stream with constraints:', videoDevice.id, videoDevice.getConstraints());
+      toast.success(`Using video device: ${videoDevice.label}`);
+
+      const captions = document.createElement('captions');
+      captions.innerHTML = videoDevice.label;
+      video.appendChild(captions);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  checkboxLockAspectRatio.onchange = async () => {
+    try {
+      let videoConstraint;
+      if (checkboxLockAspectRatio.checked) {
+        videoConstraint = {
+          width: { exact: +inputRangeResolution.value },
+          aspectRatio: {
+            exact: video.videoWidth / video.videoHeight
+          }
+        };
+        toast.success(`Apply constraint success aspectRatio: ${videoConstraint.aspectRatio.exact}`);
+      } else {
+        videoConstraint = { width: { exact: +inputRangeResolution.value } };
+        toast.success(`Apply constraint success w: ${+inputRangeResolution.value}`);
+      }
+      console.log('Apply constraints for stream:', videoConstraint);
+      await applyMediaStreamConstraints(stream, { video: videoConstraint });
+    } catch (error: any) {
+      toast.error(`applyMediaStreamConstraints error: ${error}`, error);
+    }
+  };
+
+  ['mouseup', 'touchend'].forEach((event) =>
+    inputRangeResolution.addEventListener(event, async (event: any) => {
+      try {
+        const width = event.target.value;
+        const videoConstraint = { width: { exact: +width } };
+        inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+          /\d+/g,
+          `${width}`
+        );
+        await applyMediaStreamConstraints(stream, { video: videoConstraint });
+        console.log('Apply constraints for stream:', videoConstraint);
+        toast.success(`Apply constraint success w: ${width}`);
+      } catch (error: any) {
+        toast.error(`applyMediaStreamConstraints error: ${error}`, error);
+      }
+    })
+  );
+
+  const video = document.getElementById('camera')! as HTMLVideoElement;
+  let stream = await getMediaStream({ constraints: { video: RESOLUTIONS.qvga } });
+  startStream(stream);
+  document.getElementById('qvga')!.className = badgeVariants({ variant: 'secondary' });
+
+  const resolutions = Array.from(
+    document.getElementById('resolution')!.children
+  )! as HTMLDivElement[];
+  resolutions.forEach(
+    (resolution) =>
+      (resolution.onclick = async () => {
+        if (selectedId === resolution.id) return;
+
+        const prevResolution = resolutions.find((resolution) => resolution.id === selectedId);
+        if (prevResolution) prevResolution.className = badgeVariants({ variant: 'default' });
+
+        selectedId = resolution.id as keyof typeof RESOLUTIONS;
+        resolution.className = badgeVariants({ variant: 'secondary' });
+
+        const videoConstraint = RESOLUTIONS[resolution.id as keyof typeof RESOLUTIONS];
+        const width = videoConstraint.width.exact.toString();
+        inputRangeResolution.value = width;
+        inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+          /\d+/g,
+          width
+        );
+
+        const constraints = {
+          audio: false,
+          video: videoConstraint
+        };
+
+        try {
+          stream && stopMediaStream(stream);
+          stream = await getMediaStream({ constraints });
+          startStream(stream);
+        } catch (error: any) {
+          const _prevResolution = resolutions.find(
+            (resolution) => resolution.id === prevResolution?.id
+          );
+          if (_prevResolution) {
+            selectedId = _prevResolution.id as keyof typeof RESOLUTIONS;
+            _prevResolution.className = badgeVariants({ variant: 'secondary' });
+            const prevVideoConstraint = RESOLUTIONS[_prevResolution.id as keyof typeof RESOLUTIONS];
+            const width = prevVideoConstraint.width.exact.toString();
+            inputRangeResolution.value = width;
+            inputRangeResolutionLabel.innerHTML = inputRangeResolutionLabel.innerHTML.replace(
+              /\d+/g,
+              width
+            );
+          }
+          resolution.className = badgeVariants({ variant: 'destructive' });
+
+          if (error?.name === 'OverconstrainedError') {
+            return toast.error(
+              `The resolution ${videoConstraint.width.exact}x${videoConstraint.height.exact} px is not supported by your device.`
+            );
+          }
+
+          if (error?.name === 'NotAllowedError') {
+            return toast.error(
+              'Permissions have not been granted to use your camera, you need to allow the page access to your devices.'
+            );
+          }
+
+          toast.error(`getUserMedia error: ${error}`, error);
+        }
+      })
+  );
+</script>
+
+<Layout
+  title={translation.data.title}
+  description={translation.data.description}
+  framework='javascript'
+  language={translation.id}
+  seo={{
+    languageAlternates: generateAlternate('/javascript/select-resolution')
+  }}
+>
+  <section class='w-full py-12'>
+    <Breadcrumbs
+      client:load
+      items={[
+        {
+          href: `/${translation.id}`,
+          children: translation.data['breadcrumbs.home']
+        },
+        {
+          href: `/${translation.id}/javascript`,
+          children: translation.data['breadcrumbs.javascript']
+        },
+        {
+          children: translation.data['breadcrumbs.selectResolution']
+        }
+      ]}
+    />
+
+    <div>
+      <div class='flex w-full flex-col justify-start gap-1'>
+        <div class='flex flex-col md:flex-row'>
+          <h1 class='text-3xl font-bold tracking-tight'>{translation.data.title}</h1>
+          <a href='#' target='_blank' class={buttonVariants({ variant: 'link' })}>
+            {translation.data['link.viewSource']}
+          </a>
+        </div>
+
+        <p class='text-gray-500 dark:text-gray-400'>
+          {translation.data.description}
+        </p>
+
+        <Separator className='my-4' />
+      </div>
+
+      <div class='my-2'>
+        <div class='flex flex-wrap gap-2' id='resolution'>
+          <Badge id='qvga'>QVGA</Badge>
+          <Badge id='vga'>VGA</Badge>
+          <Badge id='hd'>HD</Badge>
+          <Badge id='fullHd'>Full</Badge>
+          <Badge id='televisionFourK'>Television 4K (3840x2160)</Badge>
+          <Badge id='cinemaFourK'>Cinema 4K (4096x2160)</Badge>
+          <Badge id='eightK'>8K</Badge>
+        </div>
+      </div>
+      <div class='my-4 flex flex-col gap-2'>
+        <div>
+          <span id='input-range-resolution-label' class='text-gray-500 dark:text-gray-400'>
+            {translation.data['slider.width.label']} 320px
+          </span>
+        </div>
+        <input id='input-range-resolution' type='range' min='0' max='7680' value='320' />
+        <Checkbox
+          id='checkbox-lock-aspect-ratio'
+          label={translation.data['checkbox.lockAspectRatio.label']}
+        />
+      </div>
+      <video id='camera' autoplay playsinline></video>
+    </div>
+  </section>
+</Layout>

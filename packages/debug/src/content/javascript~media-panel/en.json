@@ -1,0 +1,21 @@
+{
+  "title": "Play with media data",
+  "description": "Get available audio, video sources and audio output devices with appropriate resolution.",
+
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.mediaPanel": "Play with media data",
+
+  "alert.warning": "without permission, the browser will restrict the available devices to at most one pertype",
+
+  "select.audioInput.label": "Audio input source:",
+  "select.audioOutput.label": "Audio output destination:",
+  "select.videoSource.label": "Video source",
+
+  "checkbox.audioOutputMuted.label": "audio output muted",
+  "checkbox.lockAspectRatio.label": "lock aspect ratio",
+
+  "slider.width.label": "width",
+
+  "link.viewSource": "View source on GitHub"
+}

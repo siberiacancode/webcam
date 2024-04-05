@@ -1,0 +1,19 @@
+{
+  "title": "Javascript шаблоны webcam",
+  "description": "📸 Это коллекция небольших примеров, демонстрирующих различные части пакета webcam. Код всех примеров доступен в репозитории <a href='https://github.com/siberiacancode' target='_blank' rel='noreferrer' class='font-medium underline underline-offset-4'>GitHub</a>.",
+
+  "card.basic.title": "базовый",
+  "card.basic.description": "Базовая демонстрация getUserMedia",
+
+  "card.snapshot.title": "снимок",
+  "card.snapshot.description": "Испольвание getUserMedia с canvas",
+
+  "card.selectResolution.title": "выбор разрешения",
+  "card.selectResolution.description": "Выбор разрешение камеры",
+
+  "card.selectSources.title": "выбор устройств",
+  "card.selectSources.description": "Выберите источники и выходы",
+
+  "card.mediaPanel.title": "медиа панель",
+  "card.mediaPanel.description": "Играйте с метаданными"
+}

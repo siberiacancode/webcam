@@ -1,0 +1,11 @@
+{
+  "title": "Испольвание getUserMedia с canvas",
+  "description": "Отображение видеопотока из getUserMedia() в теге видео.",
+
+  "breadcrumbs.home": "Главная",
+  "breadcrumbs.javascript": "Javascript",
+  "breadcrumbs.snapshot": "Использование getUserMedia с canvas",
+
+  "button.takeSnapshot": "Сделать снимок",
+  "link.viewSource": "Просмотреть исходный код на GitHub"
+}
