@@ -1,12 +1,6 @@
 {
   "exclude": ["node_modules"],
-  "include": [
-    "declarations.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".storybook/**/*.ts",
-    ".storybook/**/*.tsx"
-  ],
+  "include": ["declarations.d.ts", "**/*.ts"],
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -21,14 +15,9 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "jsx": "react",
     "sourceMap": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   }
 }

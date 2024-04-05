@@ -1,10 +1,9 @@
 import type { StoryObj, Meta } from '@storybook/react';
 import React from 'react';
 
-import { Webcam } from '../../src/components/Webcam/Webcam';
+import { Webcam } from '@/components/Webcam/Webcam';
 
-type Story = StoryObj<typeof Webcam>;
-const WebcamTemplate: Story = {
+const WebcamTemplate: StoryObj<typeof Webcam> = {
   render: (args) => <Webcam {...args} />
 };
 
