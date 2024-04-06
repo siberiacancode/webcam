@@ -1,6 +1,6 @@
 {
   "name": "@webcam/react",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Ultimate tool for working with media stream and displaying it in your React application",
   "license": "MIT",
   "author": {
