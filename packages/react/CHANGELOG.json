@@ -2,6 +2,21 @@
   "name": "@webcam/react",
   "entries": [
     {
+      "date": "Sat, 06 Apr 2024 17:02:41 GMT",
+      "version": "1.0.1",
+      "tag": "@webcam/react_v1.0.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "dmitriybabinup@gmail.com",
+            "package": "@webcam/react",
+            "commit": "not available",
+            "comment": ""
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 05 Apr 2024 18:45:19 GMT",
       "version": "1.0.0",
       "tag": "@webcam/react_v1.0.0",
