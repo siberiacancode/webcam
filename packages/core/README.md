@@ -162,3 +162,37 @@ Returns a canvas with a drawn image of the current video stream frame in accorda
   - `height?` {number} - Height of the canvas on which the image will be drawn
   - `mirrored?` {boolean} - Should the drawing image be mirrored horizontally
   - `imageSmoothingEnabled?` {boolean} - Should smooth scaled image or not (default === true)
+
+## ✨ Contributors
+
+<table>
+  <tr>
+    <td align="center" style="word-wrap: break-word; width: 100; height: 100">
+        <a href="https://github.com/michael-mir">
+            <img src="https://avatars.githubusercontent.com/u/88126915?v=4"
+            width="100;"  
+            alt="michael-mir" />
+            <br />
+            <sub style="font-size:13px"><b>🌶️ michael-mir</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 100; height: 100">
+        <a href="https://github.com/debabin">
+            <img src="https://avatars.githubusercontent.com/u/45297354?v=4"
+            width="100;"  
+            alt="debabin" />
+            <br />
+            <sub style="font-size:13px"><b>🧊 debabin</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 100.0; height: 100.0">
+        <a href="https://github.com/RiceWithMeat">
+            <img src="https://avatars.githubusercontent.com/u/47690223?v=4"
+            width="100;"  
+            alt="RiceWithMeat" />
+            <br />
+            <sub style="font-size:13px"><b>🐘 RiceWithMeat</b></sub>
+        </a>
+    </td>
+  </tr>
+</table>
