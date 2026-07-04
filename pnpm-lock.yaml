@@ -45,7 +45,7 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@webcam/core':
-        specifier: '*'
+        specifier: 1.0.1
         version: 1.0.1
     devDependencies:
       '@siberiacancode/eslint':
