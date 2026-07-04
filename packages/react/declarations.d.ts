@@ -1,8 +1,8 @@
 interface Window {
-  msRequestAnimationFrame?: Window['requestAnimationFrame'];
-  mozRequestAnimationFrame?: Window['requestAnimationFrame'];
-  webkitRequestAnimationFrame?: Window['requestAnimationFrame'];
-  msCancelAnimationFrame?: Window['cancelAnimationFrame'];
   mozCancelAnimationFrame?: Window['cancelAnimationFrame'];
+  mozRequestAnimationFrame?: Window['requestAnimationFrame'];
+  msCancelAnimationFrame?: Window['cancelAnimationFrame'];
+  msRequestAnimationFrame?: Window['requestAnimationFrame'];
   webkitCancelAnimationFrame?: Window['cancelAnimationFrame'];
+  webkitRequestAnimationFrame?: Window['requestAnimationFrame'];
 }

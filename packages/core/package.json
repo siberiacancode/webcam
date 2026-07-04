@@ -1,32 +1,20 @@
 {
   "name": "@webcam/core",
   "version": "1.0.1",
+  "type": "module",
   "description": "Ultimate tool for working with media stream",
   "license": "MIT",
   "author": {
     "name": "SIBERIA CAN CODE 🧊",
     "url": "https://github.com/siberiacancode"
   },
-  "contributors": [
-    {
-      "name": "Mironychev Michael",
-      "url": "https://github.com/michael-mir"
-    },
-    {
-      "name": "Dmitry Babin",
-      "url": "https://github.com/debabin"
-    },
-    {
-      "name": "Sergey Kryavkin",
-      "url": "https://github.com/RiceWithMeat"
-    }
-  ],
   "engines": {
     "node": ">=14"
   },
   "publishConfig": {
     "access": "public"
   },
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/siberiacancode/webcam.git"
@@ -34,33 +22,44 @@
   "homepage": "https://github.com/siberiacancode/webcam",
   "bugs": "https://github.com/siberiacancode/webcam/issues",
   "files": [
-    "dist/**/*"
+    "dist"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.mts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    }
+  },
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.mjs",
+  "types": "dist/esm/index.d.mts",
   "scripts": {
-    "build": "shx rm -rf dist && rollup -c --bundleConfigAsCjs",
-    "lint": "eslint . --ext ts --no-error-on-unmatched-pattern --fix",
-    "format": "prettier --write **/*.{js,ts}",
+    "prepublishOnly": "pnpm type && pnpm build",
+    "build": "tsdown",
+    "lint": "eslint . --fix",
+    "lint-inspector": "npx @eslint/config-inspector@latest",
     "type": "tsc --noEmit",
-    "pretty": "yarn type && yarn format && yarn lint"
+    "format": "prettier --write .",
+    "pretty": "pnpm type && pnpm lint && pnpm format",
+    "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.js": "prettier --write",
-    "*.ts": [
-      "prettier --write",
-      "eslint --no-error-on-unmatched-pattern --fix"
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   },
   "devDependencies": {
-    "@siberiacancode/builder": "^1.3.0",
-    "@siberiacancode/eslint": "^1.1.0",
-    "@siberiacancode/prettier": "^1.1.0",
-    "@types/node": "^20.11.19",
-    "eslint": "^8.56.0",
-    "shx": "^0.3.4",
-    "typescript": "^5.3.3"
+    "@siberiacancode/eslint": "^2.17.6",
+    "@siberiacancode/prettier": "^1.7.0",
+    "@types/node": "^26.1.0",
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "media",

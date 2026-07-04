@@ -1,130 +1,81 @@
-# 📸 Webcam React
+<div align="center">
+  <h1>Webcam React</h1>
 
-Ultimate tool for working with media stream in your React application
+<a href="https://www.npmjs.com/package/@webcam/react"><img alt="NPM version" src="https://img.shields.io/npm/v/@webcam/react.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://github.com/siberiacancode/webcam/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/npm/l/@webcam/react.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://siberiacancode.github.io/reactuse/"><img alt="reactuse" src="https://img.shields.io/badge/reactuse-blueviolet.svg?style=for-the-badge&logo=npm&labelColor=000000&logoWidth=20"></a>
+<a href="https://github.com/siberiacancode/webcam/discussions"><img alt="Join the community on GitHub" src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&logo=React&labelColor=000000&logoWidth=20"></a>
 
-## References
+</div>
 
-- [**Demo**](https://react-webcam-ultimate.vercel.app/en/react)
-- [**Web API**](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
-- [**Browser Сompatibility**](https://caniuse.com/stream)
+Webcam React is a powerful library that provides easy integration of webcam and media stream features into your React applications. Built with **TypeScript-first** approach, **SSR compatibility**, and **tree-shaking optimization** - everything you need to request, display, and manage camera streams in a modern React app.
 
-## Installation
+## Supported Features
 
-Install with [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- **Live webcam preview** - render media streams with a simple React component
+- **Snapshots** - capture the current frame as base64 image data
+- **Constraint controls** - configure camera source, resolution, facing mode, and more
+- **Stream lifecycle hooks** - react to request, start, stop, and error events
+- **External stream support** - attach an existing `MediaStream` when needed
 
-```shell
-npm i @webcam/react
-# or
-yarn add @webcam/react
+## Documentation
+
+Visit https://react-webcam-ultimate.vercel.app/en/react to view the full documentation.
+
+## Getting Started
+
+```bash
+npm install @webcam/react
 ```
 
-## 🦉 Philosophy
-
-📸 **Webcam React** is a package that includes ready-made solutions for common cases of setting up and using a media stream from your webcam using Web API. Our goal is to create simple and flexible tools that allow users to create, test and maintain their products.
-
-## Features
-
-- TypeScript support out of the box - full typed package
-- Webcam Snapshots - creating an image from a video stream
-- Media Stream Handling - request, errors, update, stop, etc
-- Advanced Video Settings - selecting camera type and resolution
-- Legacy API Support - outdated implementations for each browser
-- React Apps Support - component and hooks for working with playing a media stream
-
-## Usage
-
-```jsx
+```tsx
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Webcam } from '@webcam/react';
 
 const App = () => (
-  <Webcam />
+  <Webcam
+    mirrored
+    cameraResolutionType='FHD'
+    onStreamError={(error) => console.error(error)}
+  />
 );
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 ```
 
-### How to get webcam snapshot
+Create a component to use webcam snapshots:
 
-Returns a base64 encoded string of the current video stream frame in the specified format and quality.
-
-```jsx
+```tsx
 import { Webcam } from '@webcam/react';
 
-const YourComponent = () => (
-  <Webcam mirrored>
-    {({ getSnapshot }) => (
-      <button onClick={() => getSnapshot({ quality: 0.8 })}>
-        Make photo
-      </button>
-    )}
-  </Webcam>
-);
+export const Camera = () => {
+  return (
+    <Webcam mirrored>
+      {({ getSnapshot }) => (
+        <button type="button" onClick={() => getSnapshot({ quality: 0.8 })}>
+          Make photo
+        </button>
+      )}
+    </Webcam>
+  );
+};
 ```
 
-## API
+## Reactuse
 
-You can pass any supported [properties](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video) to the underlying video tag (eg `autoPlay`, `className`, etc). However, for convenience, the component uses its own values for these properties, but you can reassign them without any problems:
-| **Prop**                  | **Type** | **Default**  | **Note**                                                                                |
-| ------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| muted                     | boolean  | true         | excludes audio constraints from the MediaStream request                                 |
-| autoPlay                  | boolean  | true         |                                                                                         |
-| playsInline               | boolean  | true         |                                                                                         |
-| controls                  | boolean  | false        |                                                                                         |
+Reactuse delivers **production-ready hooks** that solve real-world problems. Built with **TypeScript-first** approach, **SSR compatibility**, and **tree-shaking optimization** - everything you need to build modern React applications. Improve your react applications with our library 📦 designed for comfort and speed.
 
-The component also supports many properties for more specific work:
-| **Prop**                  | **Type** | **Default**  | **Note**                                                                                |
-| ------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| mirrored                  | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
-| mainCamera       | boolean \| object | false        | should use a main camera (requires Navigator.mediaDevices.enumerateDevices)             |
-| frontCamera               | boolean  | false        | should use a front camera (MediaTrackConstraints['facingFront'] === 'user')             |
-| applyConstraints          | boolean  | false        | should new constraints be applied to the media stream                                   |
-| cameraResolutionMode      | string   | 'ideal'      | video track resolution mode - `('min' \| 'max' \| 'ideal' \| 'exact')`                  |
-| cameraResolutionType      | string   |              | video track resolution size - `('UHD' \| 'QHD' \| 'FHD' \| 'HD')`                       |
-| requestTimeLimit          | number   |              | limiting the media stream request by time                                               |
-| onStreamRequest           | function |              | callback for when component requests a media stream                                     |
-| onStreamStart             | function |              | callback for when component starts a media stream                                       |
-| onStreamStop              | function |              | callback for when component stops a media stream                                        |
-| onStreamError             | function |              | callback for when component can't receive a media stream                                |
-| audioConstraints          | object   ||[MediaStreamConstraints['audio']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)|
-| videoConstraints          | object   ||[MediaStreamConstraints['video']](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)|
-| stream                    | object   ||external [MediaStream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) (turns off internal media stream handling logic)|
+## Documentation
 
-## ✨ Contributors
+Visit https://reactuse.org to view the full documentation.
 
-<table>
-  <tr>
-    <td align="center" style="word-wrap: break-word; width: 100; height: 100">
-        <a href="https://github.com/michael-mir">
-            <img src="https://avatars.githubusercontent.com/u/88126915?v=4"
-            width="100;"  
-            alt="michael-mir" />
-            <br />
-            <sub style="font-size:13px"><b>🌶️ michael-mir</b></sub>
-        </a>
-    </td>
-    <td align="center" style="word-wrap: break-word; width: 100; height: 100">
-        <a href="https://github.com/debabin">
-            <img src="https://avatars.githubusercontent.com/u/45297354?v=4"
-            width="100;"  
-            alt="debabin" />
-            <br />
-            <sub style="font-size:13px"><b>🧊 debabin</b></sub>
-        </a>
-    </td>
-    <td align="center" style="word-wrap: break-word; width: 100.0; height: 100.0">
-        <a href="https://github.com/RiceWithMeat">
-            <img src="https://avatars.githubusercontent.com/u/47690223?v=4"
-            width="100;"  
-            alt="RiceWithMeat" />
-            <br />
-            <sub style="font-size:13px"><b>🐘 RiceWithMeat</b></sub>
-        </a>
-    </td>
-  </tr>
-</table>
+## Getting Started
 
-
-
+```bash
+npm install @siberiacancode/reactuse
+```

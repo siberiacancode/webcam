@@ -1,28 +1,11 @@
-import type { StorybookConfig } from '@storybook/react-vite';
+import { defineMain } from '@storybook/react-vite/node';
 
-const config: StorybookConfig = {
+export default defineMain({
   staticDirs: ['../src'],
   stories: ['./stories/**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions'
-  ],
-  framework: {
-    name: '@storybook/react-vite',
-    options: {}
-  },
-  docs: { autodocs: true },
+  addons: ['@storybook/addon-links'],
+  framework: '@storybook/react-vite',
   typescript: {
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      compilerOptions: {
-        allowSyntheticDefaultImports: false,
-        esModuleInterop: false
-      },
-      propFilter: () => true
-    }
+    check: true
   }
-};
-
-export default config;
+});

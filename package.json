@@ -7,48 +7,28 @@
     "name": "SIBERIA CAN CODE 🧊",
     "url": "https://github.com/siberiacancode"
   },
-  "contributors": [
-    {
-      "name": "Mironychev Michael",
-      "url": "https://github.com/michael-mir"
-    },
-    {
-      "name": "Dmitry Babin",
-      "url": "https://github.com/debabin"
-    },
-    {
-      "name": "Sergey Kryavkin",
-      "url": "https://github.com/RiceWithMeat"
-    }
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/siberiacancode/webcam.git"
   },
   "homepage": "https://github.com/siberiacancode/webcam",
   "bugs": "https://github.com/siberiacancode/webcam/issues",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "deploy": "turbo run deploy",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
-    "pretty": "turbo run pretty",
-    "unit-test": "turbo run unit-test",
-    "change": "beachball change --no-commit",
-    "release": "beachball publish --yes",
-    "prepare": "husky install && turbo telemetry disable && yarn build"
+    "dev": "pnpm --filter @webcam/debug dev",
+    "build": "pnpm -r --if-present run build",
+    "deploy": "pnpm -r --if-present run deploy",
+    "lint": "pnpm -r --if-present run lint",
+    "format": "pnpm -r --if-present run format",
+    "pretty": "pnpm --filter @webcam/core run pretty && pnpm --filter @webcam/react run pretty",
+    "unit-test": "pnpm -r --if-present run unit-test",
+    "prepare": "husky && pnpm build"
   },
   "devDependencies": {
-    "@siberiacancode/prettier": "^1.1.0",
-    "beachball": "^2.41.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5",
-    "turbo": "^1.13.1"
+    "@siberiacancode/prettier": "^1.7.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.4",
+    "tsdown": "^0.22.3"
   },
   "keywords": [
     "media",

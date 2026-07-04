@@ -1,6 +1,6 @@
 export { useWebcam } from './components/Webcam/hooks';
 export { Webcam } from './components/Webcam/Webcam';
-export { useAnimationFrame, useMediaStream } from './utils/hooks';
+export { useAnimationFrame } from './utils/hooks';
 export {
   applyMediaStreamConstraints,
   canGetUserMedia,

@@ -189,6 +189,7 @@ build/Release
 
 # Optional npm cache directory
 .npm
+.pnpm-store
 
 # Optional REPL history
 .node_repl_history
@@ -197,6 +198,9 @@ build/Release
 # Yarn
 .yarn/
 .yarnrc
+
+# pnpm
+pnpm-debug.log*
 
 # Playwright test output
 **/playwright/test-results
@@ -208,6 +212,3 @@ gatsby-types.d.ts
 
 # Card standard
 generated
-
-# Turbo
-.turbo
