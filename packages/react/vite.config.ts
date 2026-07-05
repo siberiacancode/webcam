@@ -19,7 +19,7 @@ export default defineConfig({
         copyFileSync('dist/index.d.ts', 'dist/index.d.mts');
       },
       entryRoot: 'src',
-      outDir: 'dist',
+      outDirs: 'dist',
       tsconfigPath: './tsconfig.json'
     })
   ],

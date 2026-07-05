@@ -13,7 +13,6 @@ import { getMediaStreamConstraints } from '@webcam/core';
 import { useEffect } from 'react';
 
 export interface UseWebcamParams extends MediaTrackConstraintsOptions {
-  applyConstraints?: boolean;
   audioConstraints?: MediaTrackConstraints;
   requestTimeLimit?: number;
   stream?: MediaStream;
@@ -58,7 +57,6 @@ export const useWebcam = ((...params: any[]) => {
 
   const {
     stream: externalStream,
-    applyConstraints,
     videoConstraints,
     audioConstraints,
     cameraResolutionMode,
@@ -73,9 +71,9 @@ export const useWebcam = ((...params: any[]) => {
   } = options;
 
   const internalRef = useRefState<HTMLVideoElement>();
-  const resolvedTarget = (target ?? internalRef) as HookTarget;
+  const resolvedRef = (target ?? internalRef) as HookTarget;
 
-  const mediaStream = useMediaStream(resolvedTarget, {
+  const mediaStream = useMediaStream(resolvedRef, {
     immediately: false,
     onStart,
     onStop,
@@ -102,7 +100,6 @@ export const useWebcam = ((...params: any[]) => {
     const run = async () => {
       onRequest?.();
       const constraints = await createConstraints();
-
       mediaStream.start(constraints);
     };
 
@@ -116,7 +113,7 @@ export const useWebcam = ((...params: any[]) => {
       onRequest?.();
       const constraints = await createConstraints();
 
-      if (applyConstraints && mediaStream.stream) {
+      if (mediaStream.stream) {
         const ok = await mediaStream.apply(constraints);
         if (!ok) mediaStream.start(constraints);
         return;
@@ -127,7 +124,6 @@ export const useWebcam = ((...params: any[]) => {
 
     run();
   }, [
-    applyConstraints,
     videoConstraints,
     audioConstraints,
     cameraResolutionMode,
@@ -140,7 +136,7 @@ export const useWebcam = ((...params: any[]) => {
   useEffect(() => {
     if (!externalStream) return;
 
-    const element = isTarget.getElement(resolvedTarget) as HTMLVideoElement | null;
+    const element = isTarget.getElement(resolvedRef) as HTMLVideoElement | null;
     if (!element) return;
 
     element.srcObject = externalStream;

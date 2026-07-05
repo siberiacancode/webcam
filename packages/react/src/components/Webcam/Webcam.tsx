@@ -18,10 +18,8 @@ export type WebcamRenderProps = (options: {
 
 interface BaseWebcamProps
   extends Omit<ComponentProps<'video'>, 'children' | 'onError'>, MediaTrackConstraintsOptions {
-  applyConstraints?: boolean;
   audioConstraints?: MediaTrackConstraints;
   children?: ReactNode | WebcamRenderProps;
-  innerRef?: RefObject<HTMLVideoElement>;
   mirrored?: boolean;
   ref?: RefObject<HTMLVideoElement>;
   requestTimeLimit?: number;
@@ -49,14 +47,13 @@ export type WebcamProps = WebcamPropsWithExternalStream | WebcamPropsWithInterna
  * @return {ReactElement} The rendered Webcam component
  */
 export const Webcam = ({
-  ref: externalVideoRef,
-  stream: externalStream,
+  ref,
+  stream,
   cameraResolutionMode,
   cameraResolutionType,
   videoConstraints,
   audioConstraints,
   requestTimeLimit,
-  applyConstraints,
   frontCamera,
   mainCamera,
   mirrored = true,
@@ -71,22 +68,17 @@ export const Webcam = ({
   ...props
 }: WebcamProps) => {
   const internalVideoRef = useRef<HTMLVideoElement | null>(null);
-  const videoRef = externalVideoRef ?? internalVideoRef;
+  const videoRef = ref ?? internalVideoRef;
 
   useWebcam(videoRef, {
-    stream: externalStream,
-    // STREAM PARAMS:
-    applyConstraints,
+    stream,
     requestTimeLimit,
-    // STREAM HANDLERS:
     onRequest,
     onError,
     onStart,
     onStop,
-    // DEFAULT CONSTRAINTS:
     videoConstraints,
     audioConstraints,
-    // CUSTOM CONSTRAINTS:
     cameraResolutionMode,
     cameraResolutionType,
     frontCamera,
