@@ -29,9 +29,6 @@ importers:
       '@siberiacancode/eslint':
         specifier: ^2.17.6
         version: 2.17.6(@typescript-eslint/rule-tester@8.62.1(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(@typescript-eslint/typescript-estree@8.62.1(typescript@6.0.3))(@typescript-eslint/utils@8.62.1(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(jiti@2.7.0)(storybook@10.4.6(@testing-library/dom@9.3.4)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7))(tailwindcss@4.3.2)(typescript@6.0.3)
-      '@siberiacancode/prettier':
-        specifier: ^1.7.0
-        version: 1.7.0(prettier@3.9.4)
       '@types/node':
         specifier: ^26.1.0
         version: 26.1.0
